@@ -134,7 +134,7 @@ function getInitialOpenMenus() {
       typeof label === 'string' && validLabels.indexOf(label) !== -1
     ))
 
-    return restoredMenus.length > 0 ? restoredMenus : fallback
+    return restoredMenus
   } catch {
     return fallback
   }

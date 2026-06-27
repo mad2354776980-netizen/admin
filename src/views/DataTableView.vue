@@ -66,53 +66,55 @@
     </section>
 
     <section class="panel content-panel" aria-label="数据表格内容区域">
-      <div class="table-demo-shell">
-        <div class="table-demo-grid table-header">
-          <span class="table-checkbox-cell">
-            <UiCheckbox
-              :model-value="allVisibleRowsSelected"
-              :indeterminate="hasPartialVisibleSelection"
-              @update:model-value="toggleAllVisibleRows"
-            />
-          </span>
-          <span>订单</span>
-          <span>客户</span>
-          <span>状态</span>
-          <span>金额</span>
-          <span>负责人</span>
-          <span>更新时间</span>
-        </div>
+      <div class="table-demo-scroll">
+        <div class="table-demo-shell">
+          <div class="table-demo-grid table-header">
+            <span class="table-checkbox-cell">
+              <UiCheckbox
+                :model-value="allVisibleRowsSelected"
+                :indeterminate="hasPartialVisibleSelection"
+                @update:model-value="toggleAllVisibleRows"
+              />
+            </span>
+            <span>订单</span>
+            <span>客户</span>
+            <span>状态</span>
+            <span>金额</span>
+            <span>负责人</span>
+            <span>更新时间</span>
+          </div>
 
-        <div
-          v-for="row in filteredRows"
-          :key="row.id"
-          class="table-demo-grid"
-          :class="{ 'is-selected': isRowSelected(row.id) }"
-        >
-          <span class="table-checkbox-cell">
-            <UiCheckbox
-              :model-value="isRowSelected(row.id)"
-              @update:model-value="toggleRowSelection(row.id)"
-            />
-          </span>
-          <span>
-            <strong>{{ row.id }}</strong>
-            <small>{{ row.channel }}</small>
-          </span>
-          <span>
-            <strong>{{ row.customer }}</strong>
-            <small>{{ row.segment }}</small>
-          </span>
-          <span>
-            <em class="status-pill" :class="statusClass(row.status)">{{ row.status }}</em>
-          </span>
-          <span>{{ row.amount }}</span>
-          <span>{{ row.owner }}</span>
-          <span>{{ row.updatedAt }}</span>
-        </div>
+          <div
+            v-for="row in filteredRows"
+            :key="row.id"
+            class="table-demo-grid"
+            :class="{ 'is-selected': isRowSelected(row.id) }"
+          >
+            <span class="table-checkbox-cell">
+              <UiCheckbox
+                :model-value="isRowSelected(row.id)"
+                @update:model-value="toggleRowSelection(row.id)"
+              />
+            </span>
+            <span>
+              <strong>{{ row.id }}</strong>
+              <small>{{ row.channel }}</small>
+            </span>
+            <span>
+              <strong>{{ row.customer }}</strong>
+              <small>{{ row.segment }}</small>
+            </span>
+            <span>
+              <em class="status-pill" :class="statusClass(row.status)">{{ row.status }}</em>
+            </span>
+            <span>{{ row.amount }}</span>
+            <span>{{ row.owner }}</span>
+            <span>{{ row.updatedAt }}</span>
+          </div>
 
-        <div v-if="filteredRows.length === 0" class="empty-state">
-          没有匹配的数据，调整搜索词或状态筛选后重试。
+          <div v-if="filteredRows.length === 0" class="empty-state">
+            没有匹配的数据，调整搜索词或状态筛选后重试。
+          </div>
         </div>
       </div>
 

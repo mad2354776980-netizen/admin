@@ -16,7 +16,11 @@
         <HeaderLogo :variant="activeLogo" :compact="isMobileViewport" />
       </div>
       <div class="topbar-actions">
-        <div ref="themeMenuRef" class="theme-switcher">
+        <div
+          ref="themeMenuRef"
+          class="theme-switcher"
+          :class="{ 'is-expanded': isThemeMenuOpen }"
+        >
           <UiButton
             class="topbar-icon-button"
             icon
@@ -74,14 +78,37 @@
             </div>
           </Transition>
         </div>
-        <div class="profile-card">
-          <UiButton variant="avatar" aria-label="个人资料" title="个人资料">
-            <span class="avatar-image" aria-hidden="true">MX</span>
+        <div
+          ref="profileMenuRef"
+          class="profile-card"
+          :class="{ 'is-expanded': isProfileMenuOpen }"
+        >
+          <UiButton
+            variant="avatar"
+            :aria-expanded="isProfileMenuOpen"
+            aria-haspopup="menu"
+            aria-label="个人资料"
+            title="个人资料"
+            @click="toggleProfileMenu"
+          >
+            <img class="avatar-image" :src="profileAvatar" alt="奶绿头像">
           </UiButton>
-          <div class="profile-popover" aria-label="个人资料面板">
+          <button
+            class="profile-summary"
+            type="button"
+            :aria-expanded="isProfileMenuOpen"
+            aria-haspopup="menu"
+            aria-label="打开个人资料"
+            @click="toggleProfileMenu"
+          >
+            <strong>奶绿</strong>
+            <span>运营管理员</span>
+          </button>
+          <div class="profile-popover" role="menu" aria-label="个人资料面板">
             <div class="profile-popover-hero">
+              <img class="avatar-image is-large" :src="profileAvatar" alt="奶绿头像">
               <div class="profile-popover-copy is-centered">
-                <strong>Max_0328</strong>
+                <strong>奶绿</strong>
                 <span>运营管理员</span>
               </div>
             </div>
@@ -132,6 +159,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
+import profileAvatar from './assets/profile-avatar.png'
 import HeaderLogo from './components/HeaderLogo.vue'
 import SidebarNav from './components/SidebarNav.vue'
 import UiButton from './components/UiButton.vue'
@@ -155,6 +183,7 @@ const themes = [
 const isMobileNavOpen = ref(getInitialMobileNavOpen())
 const isMobileViewport = ref(false)
 const isThemeMenuOpen = ref(false)
+const isProfileMenuOpen = ref(false)
 const route = useRoute()
 const router = useRouter()
 const activePath = ref(route.path)
@@ -164,6 +193,8 @@ const activeLogo = ref(getInitialLogo())
 const activeTheme = ref(getInitialTheme())
 /** @type {import('vue').Ref<HTMLElement | null>} */
 const themeMenuRef = ref(null)
+/** @type {import('vue').Ref<HTMLElement | null>} */
+const profileMenuRef = ref(null)
 
 function toggleMobileNav() {
   isMobileNavOpen.value = !isMobileNavOpen.value
@@ -183,6 +214,14 @@ function toggleThemeMenu() {
 
 function closeThemeMenu() {
   isThemeMenuOpen.value = false
+}
+
+function toggleProfileMenu() {
+  isProfileMenuOpen.value = !isProfileMenuOpen.value
+}
+
+function closeProfileMenu() {
+  isProfileMenuOpen.value = false
 }
 
 function selectTheme(theme) {
@@ -234,6 +273,7 @@ watch(
   (path) => {
     activePath.value = path
     closeThemeMenu()
+    closeProfileMenu()
   },
   { immediate: true }
 )
@@ -311,10 +351,12 @@ function handlePointerDown(event) {
   /** @type {Node | null} */
   const target = event.target instanceof Node ? event.target : null
 
-  if (!themeMenuRef.value || !target || themeMenuRef.value.contains(target)) {
-    return
+  if (themeMenuRef.value && target && !themeMenuRef.value.contains(target)) {
+    closeThemeMenu()
   }
 
-  closeThemeMenu()
+  if (profileMenuRef.value && target && !profileMenuRef.value.contains(target)) {
+    closeProfileMenu()
+  }
 }
 </script>
