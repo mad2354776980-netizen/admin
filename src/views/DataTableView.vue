@@ -8,19 +8,18 @@
         </div>
       </div>
 
-      <div class="table-filter-bar" aria-label="状态筛选">
-        <label class="table-search-field">
+      <div class="table-filter-bar" aria-label="数据筛选">
+        <div class="table-search-field">
           <span class="table-select-label">搜索订单或客户</span>
-          <label class="search-bar" role="search" aria-label="搜索订单或客户">
-            <span class="search-icon" aria-hidden="true">⌕</span>
+          <div class="search-bar" role="search" aria-label="搜索订单或客户">
             <input
               v-model.trim="keyword"
               class="search-input"
               type="search"
               placeholder="搜索订单号、客户、负责人"
             >
-          </label>
-        </label>
+          </div>
+        </div>
         <label class="table-select-field">
           <span class="table-select-label">状态筛选</span>
           <UiSelect
@@ -29,6 +28,35 @@
             label="状态筛选"
             placeholder="请选择状态"
           />
+        </label>
+        <label class="table-select-field">
+          <span class="table-select-label">渠道来源</span>
+          <UiSelect
+            v-model="activeChannel"
+            :options="channels"
+            label="渠道来源"
+            placeholder="请选择渠道"
+          />
+        </label>
+        <label class="table-select-field">
+          <span class="table-select-label">客户分层</span>
+          <UiMultiSelect
+            v-model="activeSegments"
+            :options="segments"
+            label="客户分层"
+            placeholder="请选择分层"
+          />
+        </label>
+        <label class="table-search-field table-search-field-compact">
+          <span class="table-select-label">负责人</span>
+          <div class="search-bar" role="search" aria-label="负责人">
+            <input
+              v-model.trim="ownerKeyword"
+              class="search-input"
+              type="search"
+              placeholder="输入负责人"
+            >
+          </div>
         </label>
         <div class="table-filter-actions">
           <UiButton @click="resetFilters">重置</UiButton>
@@ -91,11 +119,17 @@
 <script setup>
 import { computed, ref } from 'vue'
 import UiButton from '../components/UiButton.vue'
+import UiMultiSelect from '../components/UiMultiSelect.vue'
 import UiSelect from '../components/UiSelect.vue'
 
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
+const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
+const segments = ['高价值客户', '重点培育', '成熟客户', '续费客户', '风险观察']
 const activeStatus = ref('全部')
+const activeChannel = ref('全部')
+const activeSegments = ref([])
 const keyword = ref('')
+const ownerKeyword = ref('')
 
 const rows = [
   {
@@ -395,6 +429,9 @@ const filteredRows = computed(() => {
 
   return rows.filter((row) => {
     const matchesStatus = activeStatus.value === '全部' || row.status === activeStatus.value
+    const matchesChannel = activeChannel.value === '全部' || row.channel === activeChannel.value
+    const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.includes(row.segment)
+    const matchesOwner = !ownerKeyword.value || row.owner.toLowerCase().includes(ownerKeyword.value.toLowerCase())
     const matchesKeyword = String([
       row.id,
       row.customer,
@@ -404,7 +441,7 @@ const filteredRows = computed(() => {
       row.segment
     ].join(' ')).toLowerCase().includes(normalizedKeyword)
 
-    return matchesStatus && matchesKeyword
+    return matchesStatus && matchesChannel && matchesSegment && matchesOwner && matchesKeyword
   })
 })
 
@@ -415,6 +452,9 @@ function applyFilters() {
 function resetFilters() {
   keyword.value = ''
   activeStatus.value = '全部'
+  activeChannel.value = '全部'
+  activeSegments.value = []
+  ownerKeyword.value = ''
 }
 
 function statusClass(status) {
