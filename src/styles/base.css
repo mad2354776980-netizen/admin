@@ -423,6 +423,7 @@ button {
   max-height: calc(100vh - 104px);
   overflow: auto;
   padding: 22px 20px;
+  border-radius: 8px;
 }
 
 .sidebar-block + .sidebar-block {
@@ -835,6 +836,7 @@ button {
 
 .table-demo-page > .panel {
   position: relative;
+  border-radius: 8px;
 }
 
 .table-demo-page > .panel:first-child {
