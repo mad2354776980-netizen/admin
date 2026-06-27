@@ -74,9 +74,30 @@
             </div>
           </Transition>
         </div>
-        <UiButton variant="avatar" aria-label="个人资料" title="个人资料">
-          <span class="avatar-image" aria-hidden="true">MX</span>
-        </UiButton>
+        <div class="profile-card">
+          <UiButton variant="avatar" aria-label="个人资料" title="个人资料">
+            <span class="avatar-image" aria-hidden="true">MX</span>
+          </UiButton>
+          <div class="profile-popover" aria-label="个人资料面板">
+            <div class="profile-popover-hero">
+              <div class="profile-popover-copy is-centered">
+                <strong>Max_0328</strong>
+                <span>运营管理员</span>
+              </div>
+            </div>
+            <dl class="profile-popover-meta">
+              <div>
+                <dt>角色</dt>
+                <dd>Super Admin</dd>
+              </div>
+              <div>
+                <dt>最后登录</dt>
+                <dd>今天 19:42</dd>
+              </div>
+            </dl>
+            <button class="profile-logout" type="button">退出登录</button>
+          </div>
+        </div>
       </div>
     </header>
 

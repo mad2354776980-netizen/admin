@@ -2,9 +2,13 @@
   <button
     v-bind="$attrs"
     :class="buttonClass"
+    :disabled="isDisabled"
     :type="type"
   >
-    <slot />
+    <span v-if="loading" class="ui-button-spinner" aria-hidden="true"></span>
+    <span class="ui-button-content" :class="{ 'is-loading': loading }">
+      <slot />
+    </span>
   </button>
 </template>
 
@@ -27,8 +31,18 @@ const props = defineProps({
   icon: {
     type: Boolean,
     default: false
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
+
+const isDisabled = computed(() => props.disabled || props.loading)
 
 const buttonClass = computed(() => {
   const classes = ['ui-button']
@@ -43,6 +57,10 @@ const buttonClass = computed(() => {
 
   if (props.icon) {
     classes.push('icon-button')
+  }
+
+  if (props.loading) {
+    classes.push('is-loading')
   }
 
   return classes

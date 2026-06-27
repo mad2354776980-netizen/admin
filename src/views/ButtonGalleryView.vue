@@ -18,6 +18,8 @@
           <UiButton variant="primary">主按钮</UiButton>
           <UiButton disabled>禁用按钮</UiButton>
           <UiButton variant="primary" disabled>禁用主按钮</UiButton>
+          <UiButton loading>加载按钮</UiButton>
+          <UiButton variant="primary" loading>加载主按钮</UiButton>
         </div>
       </section>
 
