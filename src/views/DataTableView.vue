@@ -47,7 +47,7 @@
             placeholder="请选择分层"
           />
         </label>
-        <label class="table-search-field table-search-field-compact">
+        <div class="table-search-field table-search-field-compact">
           <span class="table-select-label">负责人</span>
           <div class="search-bar" role="search" aria-label="负责人">
             <input
@@ -57,7 +57,7 @@
               placeholder="输入负责人"
             >
           </div>
-        </label>
+        </div>
         <div class="table-filter-actions">
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
@@ -446,7 +446,8 @@ const filteredRows = computed(() => {
   return rows.filter((row) => {
     const matchesStatus = activeStatus.value === '全部' || row.status === activeStatus.value
     const matchesChannel = activeChannel.value === '全部' || row.channel === activeChannel.value
-    const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.includes(row.segment)
+    const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.indexOf(row.segment) !== -1
+    // noinspection JSUnresolvedReference
     const matchesOwner = !ownerKeyword.value || row.owner.toLowerCase().includes(ownerKeyword.value.toLowerCase())
     const matchesKeyword = String([
       row.id,
@@ -462,6 +463,7 @@ const filteredRows = computed(() => {
 })
 
 const visibleRowIds = computed(() => filteredRows.value.map((row) => row.id))
+// noinspection JSUnresolvedReference
 const selectedVisibleCount = computed(() => visibleRowIds.value.filter((id) => selectedRowIds.value.includes(id)).length)
 const allVisibleRowsSelected = computed(() => visibleRowIds.value.length > 0 && selectedVisibleCount.value === visibleRowIds.value.length)
 const hasPartialVisibleSelection = computed(() => selectedVisibleCount.value > 0 && !allVisibleRowsSelected.value)
@@ -480,6 +482,7 @@ function resetFilters() {
 }
 
 function isRowSelected(id) {
+  // noinspection JSUnresolvedReference
   return selectedRowIds.value.includes(id)
 }
 

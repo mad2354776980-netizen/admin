@@ -137,8 +137,11 @@ const isThemeMenuOpen = ref(false)
 const route = useRoute()
 const router = useRouter()
 const activePath = ref(route.path)
+/** @type {import('vue').Ref<string>} */
 const activeLogo = ref(getInitialLogo())
+/** @type {import('vue').Ref<string>} */
 const activeTheme = ref(getInitialTheme())
+/** @type {import('vue').Ref<HTMLElement | null>} */
 const themeMenuRef = ref(null)
 
 function toggleMobileNav() {
@@ -284,7 +287,10 @@ function getInitialLogo() {
 }
 
 function handlePointerDown(event) {
-  if (!themeMenuRef.value || themeMenuRef.value.contains(event.target)) {
+  /** @type {Node | null} */
+  const target = event.target instanceof Node ? event.target : null
+
+  if (!themeMenuRef.value || !target || themeMenuRef.value.contains(target)) {
     return
   }
 

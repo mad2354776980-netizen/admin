@@ -18,5 +18,8 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const title = computed(() => route.meta.navLabel || '页面')
+const title = computed(() => {
+  const routeMeta = /** @type {{ navLabel?: string }} */ (route.meta)
+  return routeMeta.navLabel || '页面'
+})
 </script>

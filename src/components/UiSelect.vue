@@ -95,6 +95,7 @@ function selectOption(value) {
 }
 
 function handlePointerDown(event) {
+  // noinspection JSUnresolvedReference
   if (!rootRef.value || rootRef.value.contains(event.target)) {
     return
   }

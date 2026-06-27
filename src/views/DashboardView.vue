@@ -89,7 +89,7 @@
         class="table-row"
         :class="{ 'is-selected': selectedOrder.id === order.id }"
         type="button"
-        @click="selectedOrder = order"
+        @click="selectedOrderId = order.id"
       >
         <span>
           <strong>{{ order.id }}</strong>
@@ -154,7 +154,10 @@ import { useRoute } from 'vue-router'
 import UiButton from '../components/UiButton.vue'
 
 const route = useRoute()
-const title = computed(() => route.meta.navLabel || '运营概览')
+const title = computed(() => {
+  const routeMeta = /** @type {{ navLabel?: string }} */ (route.meta)
+  return routeMeta.navLabel || '运营概览'
+})
 
 const activeStatus = ref('全部')
 const searchQuery = ref('')
@@ -235,8 +238,12 @@ const orders = [
   }
 ]
 
-const selectedOrder = ref(orders[0])
+const selectedOrderId = ref(orders[0].id)
 const queueTotal = computed(() => queue.reduce((sum, item) => sum + item.count, 0))
+const selectedOrder = computed(() => {
+  const matchedOrder = orders.find((order) => order.id === selectedOrderId.value)
+  return matchedOrder || orders[0]
+})
 
 const filteredOrders = computed(() => {
   const keyword = String(searchQuery.value).toLowerCase()

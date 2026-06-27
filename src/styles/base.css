@@ -940,7 +940,9 @@ button {
   content: "";
   width: 7px;
   height: 7px;
+  /*noinspection CssNonIntegerLengthInPixels*/
   border-right: 1.5px solid var(--muted);
+  /*noinspection CssNonIntegerLengthInPixels*/
   border-bottom: 1.5px solid var(--muted);
   transform: translateY(-1px) rotate(45deg);
 }
@@ -1052,7 +1054,9 @@ button {
 .ui-checkbox-mark {
   width: 8px;
   height: 5px;
+  /*noinspection CssNonIntegerLengthInPixels*/
   border-left: 1.5px solid var(--accent-deep);
+  /*noinspection CssNonIntegerLengthInPixels*/
   border-bottom: 1.5px solid var(--accent-deep);
   transform: rotate(-45deg) translateY(-1px);
 }
@@ -1061,6 +1065,7 @@ button {
   width: 8px;
   height: 0;
   border-left: 0;
+  /*noinspection CssNonIntegerLengthInPixels*/
   border-bottom: 1.5px solid var(--accent-deep);
   transform: none;
 }
@@ -1349,7 +1354,6 @@ button {
 }
 
 @media (max-width: 1180px) {
-  .workspace,
   .main-grid,
   .split-row {
     grid-template-columns: 1fr;
@@ -1366,6 +1370,11 @@ button {
 @media (max-width: 860px) {
   .app-shell {
     padding: 12px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .content-head,
