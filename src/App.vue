@@ -1,5 +1,6 @@
 <template>
-  <div class="app-frame">
+  <RouterView v-if="isAuthRoute" />
+  <div v-else class="app-frame">
     <header class="topbar">
       <div class="topbar-inner">
         <div class="brand">
@@ -123,7 +124,7 @@
                   <dd>今天 19:42</dd>
                 </div>
               </dl>
-              <button class="profile-logout" type="button">退出登录</button>
+              <button class="profile-logout" type="button" @click="handleLogout">退出登录</button>
             </div>
           </div>
         </div>
@@ -160,7 +161,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import profileAvatar from './assets/profile-avatar.png'
 import HeaderLogo from './components/HeaderLogo.vue'
@@ -190,6 +191,7 @@ const isProfileMenuOpen = ref(false)
 const route = useRoute()
 const router = useRouter()
 const activePath = ref(route.path)
+const isAuthRoute = computed(() => route.meta.layout === 'auth')
 /** @type {import('vue').Ref<string>} */
 const activeLogo = ref(getInitialLogo())
 /** @type {import('vue').Ref<string>} */
@@ -209,6 +211,11 @@ function closeMobileNav() {
 
 function selectNav(path) {
   router.push(path)
+}
+
+function handleLogout() {
+  closeProfileMenu()
+  router.push('/login')
 }
 
 function toggleThemeMenu() {

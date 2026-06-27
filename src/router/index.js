@@ -2,9 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ButtonGalleryView from '../views/ButtonGalleryView.vue'
 import DataTableView from '../views/DataTableView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import LoginView from '../views/LoginView.vue'
 import PlaceholderView from '../views/PlaceholderView.vue'
 
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+    meta: {
+      layout: 'auth'
+    }
+  },
   {
     path: '/',
     name: 'dashboard',
