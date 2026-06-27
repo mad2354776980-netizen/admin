@@ -1,0 +1,11 @@
+<svg width="280" height="100" viewBox="0 0 280 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(4 2)">
+    <circle cx="46" cy="46" r="34" stroke="#7C8470" stroke-width="5"/>
+    <path d="M46 0V10M46 82V92M0 46H10M82 46H92" stroke="#7C8470" stroke-width="5" stroke-linecap="round"/>
+    <path d="M13 13L20 20M72 72L79 79M79 13L72 20M13 79L20 72" stroke="#7C8470" stroke-width="5" stroke-linecap="round"/>
+    <path d="M34 61L46 24L59 33L34 61Z" fill="#C96F4F"/>
+    <path d="M34 61L46 24L59 33L34 61Z" stroke="#C96F4F" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M40 50L45 35L50 38L40 50Z" fill="#F3ECE5"/>
+  </g>
+  <text x="118" y="64" fill="#2B2C31" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="9">MAX</text>
+</svg>

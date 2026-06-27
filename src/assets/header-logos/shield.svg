@@ -1,0 +1,8 @@
+<svg width="276" height="108" viewBox="0 0 276 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M41 8L80 22V50C80 73 66.3 91.8 41 99C15.7 91.8 2 73 2 50V22L41 8Z" stroke="#C96F4F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M18 67H26V43H18V67Z" fill="#7C8470"/>
+  <path d="M31 67H39V30H31V67Z" fill="#E6D6CB"/>
+  <path d="M44 67H52V23H44V67Z" fill="#C96F4F"/>
+  <path d="M57 67H65V37H57V67Z" fill="#7C8470"/>
+  <text x="115" y="68" fill="#2B2C31" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="9">MAX</text>
+</svg>
