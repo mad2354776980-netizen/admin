@@ -1,134 +1,136 @@
 <template>
-  <div class="app-shell">
+  <div class="app-frame">
     <header class="topbar">
-      <div class="brand">
-        <UiButton
-          class="mobile-nav-toggle"
-          icon
-          :aria-expanded="isMobileNavOpen"
-          aria-controls="sidebar-navigation"
-          aria-label="打开导航菜单"
-          title="打开导航菜单"
-          @click="toggleMobileNav"
-        >
-          <span aria-hidden="true">{{ isMobileNavOpen ? '×' : '☰' }}</span>
-        </UiButton>
-        <HeaderLogo :variant="activeLogo" :compact="isMobileViewport" />
-      </div>
-      <div class="topbar-actions">
-        <div
-          ref="themeMenuRef"
-          class="theme-switcher"
-          :class="{ 'is-expanded': isThemeMenuOpen }"
-        >
+      <div class="topbar-inner">
+        <div class="brand">
           <UiButton
-            class="topbar-icon-button"
+            class="mobile-nav-toggle"
             icon
-            :aria-expanded="isThemeMenuOpen"
-            aria-haspopup="menu"
-            aria-label="主题设置"
-            title="主题设置"
-            @click="toggleThemeMenu"
+            :aria-expanded="isMobileNavOpen"
+            aria-controls="sidebar-navigation"
+            aria-label="打开导航菜单"
+            title="打开导航菜单"
+            @click="toggleMobileNav"
           >
-            <span class="theme-gear" aria-hidden="true">⚙</span>
+            <span aria-hidden="true">{{ isMobileNavOpen ? '×' : '☰' }}</span>
           </UiButton>
-
-          <Transition name="theme-popover">
-            <div
-              v-if="isThemeMenuOpen"
-              class="theme-popover"
-              role="menu"
+          <HeaderLogo :variant="activeLogo" :compact="isMobileViewport" />
+        </div>
+        <div class="topbar-actions">
+          <div
+            ref="themeMenuRef"
+            class="theme-switcher"
+            :class="{ 'is-expanded': isThemeMenuOpen }"
+          >
+            <UiButton
+              class="topbar-icon-button"
+              icon
+              :aria-expanded="isThemeMenuOpen"
+              aria-haspopup="menu"
               aria-label="主题设置"
+              title="主题设置"
+              @click="toggleThemeMenu"
             >
-              <div class="theme-popover-section">
-                <span class="theme-popover-label">标识预览</span>
-                <div class="logo-option-grid">
-                  <button
-                    v-for="logo in logos"
-                    :key="logo.value"
-                    class="logo-option"
-                    :class="{ 'is-active': activeLogo === logo.value }"
-                    type="button"
-                    @click="selectLogo(logo.value)"
-                  >
-                    <HeaderLogo :variant="logo.value" preview />
-                  </button>
+              <span class="theme-gear" aria-hidden="true">⚙</span>
+            </UiButton>
+
+            <Transition name="theme-popover">
+              <div
+                v-if="isThemeMenuOpen"
+                class="theme-popover"
+                role="menu"
+                aria-label="主题设置"
+              >
+                <div class="theme-popover-section">
+                  <span class="theme-popover-label">标识预览</span>
+                  <div class="logo-option-grid">
+                    <button
+                      v-for="logo in logos"
+                      :key="logo.value"
+                      class="logo-option"
+                      :class="{ 'is-active': activeLogo === logo.value }"
+                      type="button"
+                      @click="selectLogo(logo.value)"
+                    >
+                      <HeaderLogo :variant="logo.value" preview />
+                    </button>
+                  </div>
+                </div>
+                <div class="theme-popover-divider"></div>
+                <div class="theme-popover-section">
+                  <span class="theme-popover-label">主题方案</span>
+                </div>
+                <button
+                  v-for="theme in themes"
+                  :key="theme.value"
+                  class="theme-option"
+                  :class="{ 'is-active': activeTheme === theme.value }"
+                  type="button"
+                  role="menuitemradio"
+                  :aria-checked="String(activeTheme === theme.value)"
+                  @click="selectTheme(theme.value)"
+                >
+                  <span class="theme-option-swatch" :class="`is-${theme.value}`" aria-hidden="true"></span>
+                  <span class="theme-option-copy">
+                    <strong>{{ theme.label }}</strong>
+                    <small>{{ theme.description }}</small>
+                  </span>
+                </button>
+              </div>
+            </Transition>
+          </div>
+          <div
+            ref="profileMenuRef"
+            class="profile-card"
+            :class="{ 'is-expanded': isProfileMenuOpen }"
+          >
+            <UiButton
+              variant="avatar"
+              :aria-expanded="isProfileMenuOpen"
+              aria-haspopup="menu"
+              aria-label="个人资料"
+              title="个人资料"
+              @click="toggleProfileMenu"
+            >
+              <img class="avatar-image" :src="profileAvatar" alt="奶绿头像">
+            </UiButton>
+            <button
+              class="profile-summary"
+              type="button"
+              :aria-expanded="isProfileMenuOpen"
+              aria-haspopup="menu"
+              aria-label="打开个人资料"
+              @click="toggleProfileMenu"
+            >
+              <strong>奶绿</strong>
+              <span>运营管理员</span>
+            </button>
+            <div class="profile-popover" role="menu" aria-label="个人资料面板">
+              <div class="profile-popover-hero">
+                <img class="avatar-image is-large" :src="profileAvatar" alt="奶绿头像">
+                <div class="profile-popover-copy is-centered">
+                  <strong>奶绿</strong>
+                  <span>运营管理员</span>
                 </div>
               </div>
-              <div class="theme-popover-divider"></div>
-              <div class="theme-popover-section">
-                <span class="theme-popover-label">主题方案</span>
-              </div>
-              <button
-                v-for="theme in themes"
-                :key="theme.value"
-                class="theme-option"
-                :class="{ 'is-active': activeTheme === theme.value }"
-                type="button"
-                role="menuitemradio"
-                :aria-checked="String(activeTheme === theme.value)"
-                @click="selectTheme(theme.value)"
-              >
-                <span class="theme-option-swatch" :class="`is-${theme.value}`" aria-hidden="true"></span>
-                <span class="theme-option-copy">
-                  <strong>{{ theme.label }}</strong>
-                  <small>{{ theme.description }}</small>
-                </span>
-              </button>
+              <dl class="profile-popover-meta">
+                <div>
+                  <dt>角色</dt>
+                  <dd>Super Admin</dd>
+                </div>
+                <div>
+                  <dt>最后登录</dt>
+                  <dd>今天 19:42</dd>
+                </div>
+              </dl>
+              <button class="profile-logout" type="button">退出登录</button>
             </div>
-          </Transition>
-        </div>
-        <div
-          ref="profileMenuRef"
-          class="profile-card"
-          :class="{ 'is-expanded': isProfileMenuOpen }"
-        >
-          <UiButton
-            variant="avatar"
-            :aria-expanded="isProfileMenuOpen"
-            aria-haspopup="menu"
-            aria-label="个人资料"
-            title="个人资料"
-            @click="toggleProfileMenu"
-          >
-            <img class="avatar-image" :src="profileAvatar" alt="奶绿头像">
-          </UiButton>
-          <button
-            class="profile-summary"
-            type="button"
-            :aria-expanded="isProfileMenuOpen"
-            aria-haspopup="menu"
-            aria-label="打开个人资料"
-            @click="toggleProfileMenu"
-          >
-            <strong>奶绿</strong>
-            <span>运营管理员</span>
-          </button>
-          <div class="profile-popover" role="menu" aria-label="个人资料面板">
-            <div class="profile-popover-hero">
-              <img class="avatar-image is-large" :src="profileAvatar" alt="奶绿头像">
-              <div class="profile-popover-copy is-centered">
-                <strong>奶绿</strong>
-                <span>运营管理员</span>
-              </div>
-            </div>
-            <dl class="profile-popover-meta">
-              <div>
-                <dt>角色</dt>
-                <dd>Super Admin</dd>
-              </div>
-              <div>
-                <dt>最后登录</dt>
-                <dd>今天 19:42</dd>
-              </div>
-            </dl>
-            <button class="profile-logout" type="button">退出登录</button>
           </div>
         </div>
       </div>
     </header>
-
-    <main class="workspace">
+    <div class="app-shell">
+      <main class="workspace">
       <Transition name="mobile-nav-scrim">
         <button
           v-if="isMobileViewport && isMobileNavOpen"
@@ -152,7 +154,8 @@
       <section class="route-content">
         <RouterView />
       </section>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
 
