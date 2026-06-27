@@ -29,9 +29,9 @@
                 v-for="child in group.children"
                 :key="child.label"
                 class="nav-item nav-child"
-                :class="{ 'is-active': child.label === activeLabel }"
+                :class="{ 'is-active': child.path === activePath }"
                 type="button"
-                @click="handleSelect(child.label)"
+                @click="handleSelect(child.path)"
               >
                 <span>{{ child.label }}</span>
               </button>
@@ -56,7 +56,7 @@ const props = defineProps({
     type: Array,
     required: true
   },
-  activeLabel: {
+  activePath: {
     type: String,
     required: true
   },
@@ -103,7 +103,7 @@ function toggleMenu(label) {
  * @param {NavGroup} group
  */
 function isGroupActive(group) {
-  return group.children.some((child) => child.label === props.activeLabel)
+  return group.children.some((child) => child.path === props.activePath)
 }
 
 function handleSelect(label) {
