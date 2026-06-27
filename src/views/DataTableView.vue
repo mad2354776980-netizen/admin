@@ -68,6 +68,13 @@
     <section class="panel content-panel" aria-label="数据表格内容区域">
       <div class="table-demo-shell">
         <div class="table-demo-grid table-header">
+          <span class="table-checkbox-cell">
+            <UiCheckbox
+              :model-value="allVisibleRowsSelected"
+              :indeterminate="hasPartialVisibleSelection"
+              @update:model-value="toggleAllVisibleRows"
+            />
+          </span>
           <span>订单</span>
           <span>客户</span>
           <span>状态</span>
@@ -80,7 +87,14 @@
           v-for="row in filteredRows"
           :key="row.id"
           class="table-demo-grid"
+          :class="{ 'is-selected': isRowSelected(row.id) }"
         >
+          <span class="table-checkbox-cell">
+            <UiCheckbox
+              :model-value="isRowSelected(row.id)"
+              @update:model-value="toggleRowSelection(row.id)"
+            />
+          </span>
           <span>
             <strong>{{ row.id }}</strong>
             <small>{{ row.channel }}</small>
@@ -103,7 +117,7 @@
       </div>
 
       <div class="table-demo-footer">
-        <span>共 {{ filteredRows.length }} 条记录</span>
+        <span>共 {{ filteredRows.length }} 条记录，已选 {{ selectedVisibleCount }} 条</span>
         <div class="button-toolbar">
           <UiButton disabled>上一页</UiButton>
           <UiButton variant="primary">1</UiButton>
@@ -119,6 +133,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import UiButton from '../components/UiButton.vue'
+import UiCheckbox from '../components/UiCheckbox.vue'
 import UiMultiSelect from '../components/UiMultiSelect.vue'
 import UiSelect from '../components/UiSelect.vue'
 
@@ -130,6 +145,7 @@ const activeChannel = ref('全部')
 const activeSegments = ref([])
 const keyword = ref('')
 const ownerKeyword = ref('')
+const selectedRowIds = ref([])
 
 const rows = [
   {
@@ -445,6 +461,11 @@ const filteredRows = computed(() => {
   })
 })
 
+const visibleRowIds = computed(() => filteredRows.value.map((row) => row.id))
+const selectedVisibleCount = computed(() => visibleRowIds.value.filter((id) => selectedRowIds.value.includes(id)).length)
+const allVisibleRowsSelected = computed(() => visibleRowIds.value.length > 0 && selectedVisibleCount.value === visibleRowIds.value.length)
+const hasPartialVisibleSelection = computed(() => selectedVisibleCount.value > 0 && !allVisibleRowsSelected.value)
+
 function applyFilters() {
   return filteredRows.value
 }
@@ -455,6 +476,30 @@ function resetFilters() {
   activeChannel.value = '全部'
   activeSegments.value = []
   ownerKeyword.value = ''
+  selectedRowIds.value = []
+}
+
+function isRowSelected(id) {
+  return selectedRowIds.value.includes(id)
+}
+
+function toggleRowSelection(id) {
+  if (isRowSelected(id)) {
+    selectedRowIds.value = selectedRowIds.value.filter((rowId) => rowId !== id)
+    return
+  }
+
+  selectedRowIds.value = [...selectedRowIds.value, id]
+}
+
+function toggleAllVisibleRows(nextValue) {
+  if (!nextValue) {
+    selectedRowIds.value = selectedRowIds.value.filter((id) => !visibleRowIds.value.includes(id))
+    return
+  }
+
+  const mergedIds = new Set([...selectedRowIds.value, ...visibleRowIds.value])
+  selectedRowIds.value = Array.from(mergedIds)
 }
 
 function statusClass(status) {
