@@ -6,7 +6,11 @@
           <strong>数据表格</strong>
           <span>展示后台列表页中常用的搜索、筛选、状态列与分页结构。</span>
         </div>
-        <div class="table-demo-toolbar">
+      </div>
+
+      <div class="table-filter-bar" aria-label="状态筛选">
+        <label class="table-search-field">
+          <span class="table-select-label">搜索订单或客户</span>
           <label class="search-bar" role="search" aria-label="搜索订单或客户">
             <span class="search-icon" aria-hidden="true">⌕</span>
             <input
@@ -16,19 +20,20 @@
               placeholder="搜索订单号、客户、负责人"
             >
           </label>
-          <UiButton @click="activeStatus = '全部'">清除筛选</UiButton>
+        </label>
+        <label class="table-select-field">
+          <span class="table-select-label">状态筛选</span>
+          <UiSelect
+            v-model="activeStatus"
+            :options="statuses"
+            label="状态筛选"
+            placeholder="请选择状态"
+          />
+        </label>
+        <div class="table-filter-actions">
+          <UiButton @click="resetFilters">重置</UiButton>
+          <UiButton variant="primary" @click="applyFilters">查询</UiButton>
         </div>
-      </div>
-
-      <div class="table-filter-bar" aria-label="状态筛选">
-        <UiButton
-          v-for="status in statuses"
-          :key="status"
-          :variant="status === activeStatus ? 'primary' : 'ghost'"
-          @click="activeStatus = status"
-        >
-          {{ status }}
-        </UiButton>
       </div>
     </section>
 
@@ -86,6 +91,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import UiButton from '../components/UiButton.vue'
+import UiSelect from '../components/UiSelect.vue'
 
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
 const activeStatus = ref('全部')
@@ -401,6 +407,15 @@ const filteredRows = computed(() => {
     return matchesStatus && matchesKeyword
   })
 })
+
+function applyFilters() {
+  return filteredRows.value
+}
+
+function resetFilters() {
+  keyword.value = ''
+  activeStatus.value = '全部'
+}
 
 function statusClass(status) {
   return {
