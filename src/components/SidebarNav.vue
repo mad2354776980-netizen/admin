@@ -4,47 +4,50 @@
     :class="{ 'is-mobile-drawer': mobileMode, 'is-mobile-open': mobileOpen }"
     aria-label="后台导航"
   >
-    <section class="sidebar-block">
-      <span class="panel-label">Navigation</span>
-      <nav class="nav-list">
-        <div v-for="group in groups" :key="group.label" class="nav-group">
-          <button
-            class="nav-item nav-parent"
-            :class="{ 'is-open': isMenuOpen(group.label), 'is-active': isGroupActive(group) }"
-            type="button"
-            :aria-expanded="isMenuOpen(group.label)"
-            @click="toggleMenu(group.label)"
-          >
-            <span>{{ group.label }}</span>
-            <span class="nav-arrow" aria-hidden="true">›</span>
-          </button>
+    <NScrollbar class="sidebar-scroll">
+      <section class="sidebar-block sidebar-scroll-inner">
+        <span class="panel-label">Navigation</span>
+        <nav class="nav-list">
+          <div v-for="group in groups" :key="group.label" class="nav-group">
+            <button
+              class="nav-item nav-parent"
+              :class="{ 'is-open': isMenuOpen(group.label), 'is-active': isGroupActive(group) }"
+              type="button"
+              :aria-expanded="isMenuOpen(group.label)"
+              @click="toggleMenu(group.label)"
+            >
+              <span>{{ group.label }}</span>
+              <span class="nav-arrow" aria-hidden="true">›</span>
+            </button>
 
-          <div
-            class="nav-children-wrap"
-            :class="{ 'is-open': isMenuOpen(group.label) }"
-            :aria-hidden="!isMenuOpen(group.label)"
-          >
-            <div class="nav-children">
-              <button
-                v-for="child in group.children"
-                :key="child.label"
-                class="nav-item nav-child"
-                :class="{ 'is-active': child.path === activePath }"
-                type="button"
-                @click="handleSelect(child.path)"
-              >
-                <span>{{ child.label }}</span>
-              </button>
+            <div
+              class="nav-children-wrap"
+              :class="{ 'is-open': isMenuOpen(group.label) }"
+              :aria-hidden="!isMenuOpen(group.label)"
+            >
+              <div class="nav-children">
+                <button
+                  v-for="child in group.children"
+                  :key="child.label"
+                  class="nav-item nav-child"
+                  :class="{ 'is-active': child.path === activePath }"
+                  type="button"
+                  @click="handleSelect(child.path)"
+                >
+                  <span>{{ child.label }}</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
-    </section>
+        </nav>
+      </section>
+    </NScrollbar>
   </aside>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
+import { NScrollbar } from 'naive-ui'
 
 /**
  * @typedef {{ label: string }} NavChild
