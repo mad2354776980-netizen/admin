@@ -46,8 +46,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { NScrollbar } from 'naive-ui'
+import {ref, watch} from 'vue'
+import {NScrollbar} from 'naive-ui'
 
 /**
  * @typedef {{ label: string }} NavChild
@@ -133,11 +133,9 @@ function getInitialOpenMenus() {
     }
 
     const validLabels = props.groups.map((group) => group.label)
-    const restoredMenus = parsedValue.filter((label) => (
-      typeof label === 'string' && validLabels.indexOf(label) !== -1
+    return parsedValue.filter((label) => (
+        typeof label === 'string' && validLabels.indexOf(label) !== -1
     ))
-
-    return restoredMenus
   } catch {
     return fallback
   }

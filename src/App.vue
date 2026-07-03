@@ -181,7 +181,10 @@ const logos = [
 const themes = [
   { value: 'warm', label: '暖沙', description: '当前默认主题' },
   { value: 'graphite', label: '石墨', description: '更冷静的深灰基调' },
-  { value: 'grove', label: '松林', description: '偏绿色的业务工作台' }
+  { value: 'grove', label: '松林', description: '偏绿色的业务工作台' },
+  { value: 'mist', label: '雾青', description: '更轻的灰青色调' },
+  { value: 'ember', label: '余烬', description: '偏铜红的深暖质感' },
+  { value: 'ocean', label: '海雾', description: '更清爽的蓝灰工作台' }
 ]
 
 const isMobileNavOpen = ref(getInitialMobileNavOpen())

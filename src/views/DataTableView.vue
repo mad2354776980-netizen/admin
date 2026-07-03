@@ -38,15 +38,6 @@
             placeholder="请选择渠道"
           />
         </label>
-        <label class="table-select-field">
-          <span class="table-select-label">客户分层</span>
-          <UiMultiSelect
-            v-model="activeSegments"
-            :options="segments"
-            label="客户分层"
-            placeholder="请选择分层"
-          />
-        </label>
         <div class="table-search-field table-search-field-compact">
           <span class="table-select-label">负责人</span>
           <div class="search-bar" role="search" aria-label="负责人">
@@ -58,6 +49,15 @@
             >
           </div>
         </div>
+        <label class="table-select-field table-chip-field">
+          <span class="table-select-label">客户分层</span>
+          <UiMultiSelect
+            v-model="activeSegments"
+            :options="segments"
+            label="客户分层"
+            placeholder="请选择分层"
+          />
+        </label>
         <div class="table-filter-actions">
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
@@ -82,6 +82,7 @@
             <span>金额</span>
             <span>负责人</span>
             <span>更新时间</span>
+            <span class="table-action-cell">操作</span>
           </div>
 
           <div
@@ -90,26 +91,37 @@
             class="table-demo-grid"
             :class="{ 'is-selected': isRowSelected(row.id) }"
           >
-            <span class="table-checkbox-cell">
+            <span class="table-checkbox-cell table-cell table-cell-checkbox">
               <UiCheckbox
                 :model-value="isRowSelected(row.id)"
                 @update:model-value="toggleRowSelection(row.id)"
               />
             </span>
-            <span>
+            <span class="table-cell table-cell-order" data-label="订单">
               <strong>{{ row.id }}</strong>
               <small>{{ row.channel }}</small>
             </span>
-            <span>
+            <span class="table-cell table-cell-status" data-label="状态">
+              <em class="status-pill" :class="statusClass(row.status)">{{ row.status }}</em>
+            </span>
+            <span class="table-cell table-cell-customer" data-label="客户">
               <strong>{{ row.customer }}</strong>
               <small>{{ row.segment }}</small>
             </span>
-            <span>
-              <em class="status-pill" :class="statusClass(row.status)">{{ row.status }}</em>
+            <span class="table-cell table-cell-amount" data-label="金额">
+              <strong>{{ row.amount }}</strong>
             </span>
-            <span>{{ row.amount }}</span>
-            <span>{{ row.owner }}</span>
-            <span>{{ row.updatedAt }}</span>
+            <span class="table-cell table-cell-owner" data-label="负责人">{{ row.owner }}</span>
+            <span class="table-cell table-cell-updated" data-label="更新时间">{{ row.updatedAt }}</span>
+            <span class="table-action-cell table-cell table-cell-action">
+              <UiButton
+                class="table-action-button"
+                @mousedown.prevent
+                @click.stop="openEditor(row)"
+              >
+                编辑
+              </UiButton>
+            </span>
           </div>
 
           <div v-if="filteredRows.length === 0" class="empty-state">
@@ -129,11 +141,115 @@
         </div>
       </div>
     </section>
+
+    <Teleport to="body">
+      <Transition name="table-editor-scrim">
+        <button
+          v-if="isEditorOpen"
+          class="table-editor-scrim"
+          type="button"
+          aria-label="关闭编辑弹窗"
+          @click="closeEditor"
+        ></button>
+      </Transition>
+
+      <Transition name="table-editor-modal">
+        <aside
+          v-if="isEditorOpen"
+          class="table-editor-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="订单编辑弹窗"
+        >
+          <div class="table-editor-head">
+            <div class="table-editor-copy">
+              <strong>编辑订单</strong>
+              <span>{{ editForm.id || '未选择订单' }}</span>
+            </div>
+            <UiButton class="table-editor-close" icon aria-label="关闭编辑弹窗" @click="closeEditor">
+              ×
+            </UiButton>
+          </div>
+
+          <div class="table-editor-summary">
+            <div>
+              <span>金额</span>
+              <strong>{{ editForm.amount || '--' }}</strong>
+            </div>
+            <div>
+              <span>更新时间</span>
+              <strong>{{ editForm.updatedAt || '--' }}</strong>
+            </div>
+          </div>
+
+          <div class="table-editor-form">
+            <label class="table-select-field">
+              <span class="table-select-label">客户名称</span>
+              <div class="search-bar" role="group" aria-label="客户名称">
+                <input
+                  v-model.trim="editForm.customer"
+                  class="search-input"
+                  type="text"
+                  placeholder="输入客户名称"
+                >
+              </div>
+            </label>
+
+            <label class="table-select-field">
+              <span class="table-select-label">订单状态</span>
+              <UiSelect
+                v-model="editForm.status"
+                :options="editableStatuses"
+                label="订单状态"
+                placeholder="请选择状态"
+              />
+            </label>
+
+            <label class="table-select-field">
+              <span class="table-select-label">渠道来源</span>
+              <UiSelect
+                v-model="editForm.channel"
+                :options="editableChannels"
+                label="渠道来源"
+                placeholder="请选择渠道"
+              />
+            </label>
+
+            <label class="table-select-field">
+              <span class="table-select-label">客户分层</span>
+              <UiSelect
+                v-model="editForm.segment"
+                :options="segments"
+                label="客户分层"
+                placeholder="请选择分层"
+              />
+            </label>
+
+            <label class="table-select-field">
+              <span class="table-select-label">负责人</span>
+              <div class="search-bar" role="group" aria-label="负责人">
+                <input
+                  v-model.trim="editForm.owner"
+                  class="search-input"
+                  type="text"
+                  placeholder="输入负责人"
+                >
+              </div>
+            </label>
+          </div>
+
+          <div class="table-editor-actions">
+            <UiButton @click="closeEditor">取消</UiButton>
+            <UiButton variant="primary" @click="saveEditor">保存</UiButton>
+          </div>
+        </aside>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
 import UiMultiSelect from '../components/UiMultiSelect.vue'
@@ -142,14 +258,21 @@ import UiSelect from '../components/UiSelect.vue'
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
 const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
 const segments = ['高价值客户', '重点培育', '成熟客户', '续费客户', '风险观察']
+const editableStatuses = statuses.filter((status) => status !== '全部')
+const editableChannels = channels.filter((channel) => channel !== '全部')
 const activeStatus = ref('全部')
 const activeChannel = ref('全部')
 const activeSegments = ref([])
 const keyword = ref('')
 const ownerKeyword = ref('')
 const selectedRowIds = ref([])
+const isEditorOpen = ref(false)
+const editingRowId = ref('')
+const editForm = ref(createEmptyEditor())
+const blockedScrollKeys = [' ', 'PageUp', 'PageDown', 'Home', 'End']
+let touchStartY = 0
 
-const rows = [
+const rows = ref([
   {
     id: 'ORD-24106',
     channel: 'App / 企业版',
@@ -440,12 +563,12 @@ const rows = [
     owner: '叶澜',
     updatedAt: '03:56'
   }
-]
+])
 
 const filteredRows = computed(() => {
   const normalizedKeyword = String(keyword.value).toLowerCase()
 
-  return rows.filter((row) => {
+  return rows.value.filter((row) => {
     const matchesStatus = activeStatus.value === '全部' || row.status === activeStatus.value
     const matchesChannel = activeChannel.value === '全部' || row.channel === activeChannel.value
     const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.indexOf(row.segment) !== -1
@@ -515,4 +638,165 @@ function statusClass(status) {
     'is-risk': status === '风险'
   }
 }
+
+function createEmptyEditor() {
+  return {
+    id: '',
+    channel: '',
+    customer: '',
+    segment: '',
+    status: '',
+    amount: '',
+    owner: '',
+    updatedAt: ''
+  }
+}
+
+function openEditor(row) {
+  const currentScrollY = typeof window === 'undefined' ? 0 : window.scrollY
+
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+
+  editingRowId.value = row.id
+  editForm.value = { ...row }
+  isEditorOpen.value = true
+
+  if (typeof window !== 'undefined') {
+    nextTick(() => {
+      window.scrollTo(0, currentScrollY)
+      window.requestAnimationFrame(() => {
+        window.scrollTo(0, currentScrollY)
+      })
+    })
+  }
+}
+
+function closeEditor() {
+  isEditorOpen.value = false
+  editingRowId.value = ''
+  editForm.value = createEmptyEditor()
+}
+
+function saveEditor() {
+  if (!editingRowId.value) {
+    return
+  }
+
+  rows.value = rows.value.map((row) => {
+    if (row.id !== editingRowId.value) {
+      return row
+    }
+
+    return {
+      ...row,
+      ...editForm.value,
+      updatedAt: '刚刚'
+    }
+  })
+
+  closeEditor()
+}
+
+function getScrollableEditorContainer(target) {
+  if (!(target instanceof Element)) {
+    return null
+  }
+
+  return target.closest('.table-editor-form')
+}
+
+function canScrollEditor(container, deltaY) {
+  if (!container || deltaY === 0) {
+    return false
+  }
+
+  const maxScrollTop = container.scrollHeight - container.clientHeight
+  if (maxScrollTop <= 0) {
+    return false
+  }
+
+  if (deltaY < 0) {
+    return container.scrollTop > 0
+  }
+
+  return container.scrollTop < maxScrollTop
+}
+
+function handleLockedWheel(event) {
+  if (!isEditorOpen.value) {
+    return
+  }
+
+  const container = getScrollableEditorContainer(event.target)
+  if (canScrollEditor(container, event.deltaY)) {
+    return
+  }
+
+  event.preventDefault()
+}
+
+function handleLockedKeydown(event) {
+  if (!isEditorOpen.value) {
+    return
+  }
+
+  const activeElement = document.activeElement
+  const isTypingTarget = activeElement instanceof HTMLInputElement
+    || activeElement instanceof HTMLTextAreaElement
+    || activeElement instanceof HTMLSelectElement
+    || (activeElement instanceof HTMLElement && activeElement.isContentEditable)
+
+  if (blockedScrollKeys.indexOf(event.key) !== -1) {
+    event.preventDefault()
+    return
+  }
+
+  if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !isTypingTarget) {
+    event.preventDefault()
+  }
+}
+
+function handleLockedTouchStart(event) {
+  const touch = event.touches && event.touches[0]
+  touchStartY = touch ? touch.clientY : 0
+}
+
+function handleLockedTouchMove(event) {
+  if (!isEditorOpen.value) {
+    return
+  }
+
+  const touch = event.touches && event.touches[0]
+  const currentY = touch ? touch.clientY : touchStartY
+  const deltaY = touchStartY - currentY
+  const container = getScrollableEditorContainer(event.target)
+
+  if (canScrollEditor(container, deltaY)) {
+    return
+  }
+
+  event.preventDefault()
+}
+
+function setPageScrollLocked(locked) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const method = locked ? 'addEventListener' : 'removeEventListener'
+  window[method]('wheel', handleLockedWheel, { passive: false })
+  window[method]('keydown', handleLockedKeydown, { passive: false })
+  window[method]('touchstart', handleLockedTouchStart, { passive: true })
+  window[method]('touchmove', handleLockedTouchMove, { passive: false })
+}
+
+watch(isEditorOpen, (nextValue) => {
+  setPageScrollLocked(nextValue)
+})
+
+onBeforeUnmount(() => {
+  setPageScrollLocked(false)
+})
 </script>
