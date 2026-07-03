@@ -82,7 +82,7 @@
             <span>金额</span>
             <span>负责人</span>
             <span>更新时间</span>
-            <span class="table-action-cell">操作</span>
+            <span class="table-action-cell table-action-column">操作</span>
           </div>
 
           <div
@@ -113,13 +113,20 @@
             </span>
             <span class="table-cell table-cell-owner" data-label="负责人">{{ row.owner }}</span>
             <span class="table-cell table-cell-updated" data-label="更新时间">{{ row.updatedAt }}</span>
-            <span class="table-action-cell table-cell table-cell-action">
+            <span class="table-action-cell table-action-column table-cell table-cell-action" data-label="操作">
               <UiButton
                 class="table-action-button"
                 @mousedown.prevent
                 @click.stop="openEditor(row)"
               >
                 编辑
+              </UiButton>
+              <UiButton
+                class="table-action-button table-action-button-danger"
+                @mousedown.prevent
+                @click.stop="deleteRow(row.id)"
+              >
+                删除
               </UiButton>
             </span>
           </div>
@@ -697,6 +704,15 @@ function saveEditor() {
   })
 
   closeEditor()
+}
+
+function deleteRow(id) {
+  rows.value = rows.value.filter((row) => row.id !== id)
+  selectedRowIds.value = selectedRowIds.value.filter((rowId) => rowId !== id)
+
+  if (editingRowId.value === id) {
+    closeEditor()
+  }
 }
 
 function getScrollableEditorContainer(target) {

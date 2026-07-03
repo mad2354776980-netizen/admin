@@ -1288,6 +1288,14 @@ button {
   justify-content: flex-end;
 }
 
+.table-action-column {
+  justify-content: flex-start;
+}
+
+.table-cell-action {
+  gap: 12px;
+}
+
 .table-demo-grid span {
   min-width: 0;
 }
@@ -1305,10 +1313,34 @@ button {
   font-weight: 400;
 }
 
-.table-action-button {
+.ui-button.ghost-button.table-action-button {
   min-height: 32px;
-  padding: 0 12px;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  color: var(--muted);
+  background: transparent;
   font-size: 0.78rem;
+}
+
+.ui-button.ghost-button.table-action-button:hover {
+  border: 0;
+  box-shadow: none;
+  color: var(--accent-deep);
+  background: transparent;
+  transform: none;
+}
+
+.ui-button.ghost-button.table-action-button.table-action-button-danger {
+  color: #b16767;
+}
+
+.ui-button.ghost-button.table-action-button.table-action-button-danger:hover {
+  border: 0;
+  box-shadow: none;
+  color: #984f4f;
+  background: transparent;
+  transform: none;
 }
 
 .table-demo-footer {
@@ -2066,8 +2098,8 @@ button {
 
   .table-cell-action {
     grid-column: 1 / -1;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: start;
     gap: 0;
     margin-top: 2px;
     padding-top: 10px;
@@ -2176,11 +2208,11 @@ button {
   }
 
   .table-cell-action {
-    justify-content: stretch;
+    justify-content: flex-start;
   }
 
   .table-cell-action .ui-button {
-    width: 100%;
+    width: auto;
   }
 
   .table-editor-modal {
