@@ -4,6 +4,17 @@
     :class="{ 'is-mobile-drawer': mobileMode, 'is-mobile-open': mobileOpen }"
     aria-label="后台导航"
   >
+    <div v-if="mobileMode" class="mobile-drawer-head">
+      <strong>菜单</strong>
+      <button
+        class="mobile-drawer-close"
+        type="button"
+        aria-label="关闭导航菜单"
+        @click="closeMobile"
+      >
+        ×
+      </button>
+    </div>
     <NScrollbar class="sidebar-scroll">
       <section class="sidebar-block sidebar-scroll-inner">
         <span class="panel-label">Navigation</span>
@@ -111,6 +122,10 @@ function isGroupActive(group) {
 
 function handleSelect(label) {
   emit('select', label)
+  emit('close-mobile')
+}
+
+function closeMobile() {
   emit('close-mobile')
 }
 
