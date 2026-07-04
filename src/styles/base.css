@@ -2246,10 +2246,7 @@ button {
   }
 
   .sidebar-panel.is-mobile-drawer .sidebar-scroll-inner {
-    padding-top: 14px;
-    padding-left: 18px;
-    padding-right: 18px;
-    padding-bottom: 18px;
+    padding: 14px 18px 18px;
   }
 
   .sidebar-panel.is-mobile-drawer .nav-list {

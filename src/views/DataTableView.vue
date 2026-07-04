@@ -161,7 +161,7 @@
       </Transition>
 
       <Transition name="table-editor-modal">
-        <aside
+        <div
           v-if="isEditorOpen"
           class="table-editor-modal"
           role="dialog"
@@ -192,14 +192,14 @@
           <div class="table-editor-form">
             <label class="table-select-field">
               <span class="table-select-label">客户名称</span>
-              <div class="search-bar" role="group" aria-label="客户名称">
+              <span class="search-bar" role="group" aria-label="客户名称">
                 <input
                   v-model.trim="editForm.customer"
                   class="search-input"
                   type="text"
                   placeholder="输入客户名称"
                 >
-              </div>
+              </span>
             </label>
 
             <label class="table-select-field">
@@ -234,14 +234,14 @@
 
             <label class="table-select-field">
               <span class="table-select-label">负责人</span>
-              <div class="search-bar" role="group" aria-label="负责人">
+              <span class="search-bar" role="group" aria-label="负责人">
                 <input
                   v-model.trim="editForm.owner"
                   class="search-input"
                   type="text"
                   placeholder="输入负责人"
                 >
-              </div>
+              </span>
             </label>
           </div>
 
@@ -249,7 +249,7 @@
             <UiButton @click="closeEditor">取消</UiButton>
             <UiButton variant="primary" @click="saveEditor">保存</UiButton>
           </div>
-        </aside>
+        </div>
       </Transition>
     </Teleport>
   </div>
@@ -576,11 +576,15 @@ const filteredRows = computed(() => {
   const normalizedKeyword = String(keyword.value).toLowerCase()
 
   return rows.value.filter((row) => {
+    // noinspection JSUnresolvedReference
     const matchesStatus = activeStatus.value === '全部' || row.status === activeStatus.value
+    // noinspection JSUnresolvedReference
     const matchesChannel = activeChannel.value === '全部' || row.channel === activeChannel.value
+    // noinspection JSUnresolvedReference
     const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.indexOf(row.segment) !== -1
     // noinspection JSUnresolvedReference
     const matchesOwner = !ownerKeyword.value || row.owner.toLowerCase().includes(ownerKeyword.value.toLowerCase())
+    // noinspection JSUnresolvedReference
     const matchesKeyword = String([
       row.id,
       row.customer,
@@ -594,6 +598,7 @@ const filteredRows = computed(() => {
   })
 })
 
+// noinspection JSUnresolvedReference
 const visibleRowIds = computed(() => filteredRows.value.map((row) => row.id))
 // noinspection JSUnresolvedReference
 const selectedVisibleCount = computed(() => visibleRowIds.value.filter((id) => selectedRowIds.value.includes(id)).length)
@@ -692,6 +697,7 @@ function saveEditor() {
   }
 
   rows.value = rows.value.map((row) => {
+    // noinspection JSUnresolvedReference
     if (row.id !== editingRowId.value) {
       return row
     }
@@ -707,6 +713,7 @@ function saveEditor() {
 }
 
 function deleteRow(id) {
+  // noinspection JSUnresolvedReference
   rows.value = rows.value.filter((row) => row.id !== id)
   selectedRowIds.value = selectedRowIds.value.filter((rowId) => rowId !== id)
 
