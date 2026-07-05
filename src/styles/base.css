@@ -521,7 +521,7 @@ button {
   position: fixed;
   top: var(--topbar-height);
   left: 0;
-  width: 280px;
+  width: 236px;
   height: calc(100dvh - var(--topbar-height));
   max-height: calc(100dvh - var(--topbar-height));
   display: flex;
@@ -680,7 +680,7 @@ button {
 .route-content {
   min-width: 0;
   overflow: visible;
-  padding-left: 298px;
+  padding-left: 254px;
   padding-bottom: 20px;
 }
 
@@ -2177,7 +2177,7 @@ button {
     left: 0;
     bottom: 0;
     z-index: 40;
-    width: min(340px, calc(100vw - 28px));
+    width: min(300px, calc(100vw - 28px));
     height: 100dvh;
     max-height: 100dvh;
     display: flex;
