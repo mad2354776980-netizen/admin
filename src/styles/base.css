@@ -135,21 +135,12 @@ body {
   color: var(--text);
   font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
   background:
-    radial-gradient(circle at top left, var(--glow-one), transparent 24%),
-    radial-gradient(circle at right 18%, var(--glow-two), transparent 22%),
+    radial-gradient(circle at top left, var(--glow-one), transparent 20%),
     linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 46%, var(--bg-bottom) 100%);
 }
 
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(36, 29, 24, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(36, 29, 24, 0.018) 1px, transparent 1px);
-  background-size: 24px 24px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.48), transparent 85%);
+  content: none;
 }
 
 button,
@@ -183,6 +174,7 @@ button {
   width: 100%;
   margin: 0;
   padding: 14px 20px 0 0;
+  will-change: scroll-position;
 }
 
 .topbar {
@@ -194,7 +186,7 @@ button {
   margin-bottom: 0;
   padding: 14px 20px;
   border: 1px solid var(--line);
-  background: rgba(251, 248, 243, 0.96);
+  background: var(--surface-strong);
   animation: rise 680ms ease both;
 }
 
@@ -530,6 +522,7 @@ button {
   border-top: 0;
   border-left: 0;
   border-radius: 0;
+  transform: translateZ(0);
 }
 
 .sidebar-scroll {
@@ -1031,6 +1024,18 @@ button {
 
 .table-filter-actions .ui-button {
   min-width: 0;
+}
+
+.table-create-button.primary-button {
+  border: 0;
+  background: var(--accent);
+  color: #fff7f2;
+  font-weight: 700;
+}
+
+.table-create-button.primary-button .ui-button-content {
+  color: #fff7f2;
+  opacity: 1;
 }
 
 .table-select-field {

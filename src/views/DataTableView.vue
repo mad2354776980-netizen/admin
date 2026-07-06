@@ -66,6 +66,10 @@
     </section>
 
     <section class="panel content-panel" aria-label="数据表格内容区域">
+      <div class="table-head">
+        <UiButton class="table-create-button" variant="primary" @click="createOrder">新增订单</UiButton>
+      </div>
+
       <div class="table-demo-scroll">
         <div class="table-demo-shell">
           <div class="table-demo-grid table-header">
@@ -685,6 +689,36 @@ function openEditor(row) {
   }
 }
 
+function createOrder() {
+  const currentScrollY = typeof window === 'undefined' ? 0 : window.scrollY
+
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+
+  editingRowId.value = ''
+  editForm.value = {
+    id: `ORD-${Date.now()}`,
+    channel: editableChannels[0] || '',
+    customer: '',
+    segment: segments[0] || '',
+    status: editableStatuses[0] || '',
+    amount: '',
+    owner: '',
+    updatedAt: '刚刚'
+  }
+  isEditorOpen.value = true
+
+  if (typeof window !== 'undefined') {
+    nextTick(() => {
+      window.scrollTo(0, currentScrollY)
+      window.requestAnimationFrame(() => {
+        window.scrollTo(0, currentScrollY)
+      })
+    })
+  }
+}
+
 function closeEditor() {
   isEditorOpen.value = false
   editingRowId.value = ''
@@ -693,6 +727,15 @@ function closeEditor() {
 
 function saveEditor() {
   if (!editingRowId.value) {
+    rows.value = [
+      {
+        ...editForm.value,
+        updatedAt: '刚刚'
+      },
+      ...rows.value
+    ]
+
+    closeEditor()
     return
   }
 
