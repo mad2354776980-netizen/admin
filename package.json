@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^14.0.0",
+    "date-fns": "^4.4.0",
     "naive-ui": "^2.44.1",
     "vue": "^3.5.30",
     "vue-router": "^4.6.3"

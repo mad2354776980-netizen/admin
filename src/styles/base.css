@@ -1044,6 +1044,283 @@ button {
   min-width: 0;
 }
 
+.table-time-field,
+.table-time-picker {
+  width: 100%;
+  min-width: 0;
+}
+
+.table-time-field {
+  grid-column: span 1;
+  max-width: 420px;
+  justify-self: start;
+}
+
+.table-time-picker {
+  --dp-border-radius: 4px;
+  --dp-cell-border-radius: 4px;
+  --dp-font-size: 0.91rem;
+  --dp-button-icon-height: 14px;
+  --dp-month-year-row-height: 34px;
+  --dp-month-year-row-button-size: 24px;
+  --dp-cell-size: 32px;
+  --dp-cell-padding: 3px;
+  --dp-calendar-header-cell-padding: 4px;
+  --dp-action-row-padding: 10px 12px;
+  --dp-action-buttons-padding: 0 10px;
+  --dp-action-button-height: 28px;
+  --dp-input-padding: 8px 34px 8px 12px;
+  --dp-input-icon-padding: 34px;
+  --dp-menu-min-width: 244px;
+  --dp-border-color: var(--line);
+  --dp-menu-border-color: rgba(196, 109, 76, 0.18);
+  --dp-border-color-hover: rgba(196, 109, 76, 0.26);
+  --dp-border-color-focus: rgba(196, 109, 76, 0.34);
+  --dp-hover-color: rgba(201, 122, 87, 0.1);
+  --dp-hover-text-color: var(--text);
+  --dp-primary-color: var(--accent);
+  --dp-primary-text-color: #fff7f2;
+  --dp-highlight-color: rgba(201, 122, 87, 0.12);
+  --dp-text-color: var(--text);
+  --dp-icon-color: var(--muted);
+  --dp-placeholder-color: color-mix(in srgb, var(--muted) 72%, white 28%);
+  --dp-background-color: transparent;
+  --dp-menu-padding: 10px;
+}
+
+.table-time-picker .dp__main,
+.table-time-picker .dp--theme-light,
+.table-time-picker .dp--theme-dark {
+  width: 100%;
+}
+
+.table-time-picker .dp--input {
+  min-height: 40px;
+  border-radius: 4px;
+  box-shadow: none;
+  background: transparent;
+  font-size: 0.82rem;
+}
+
+.table-time-picker .dp--input::placeholder {
+  color: var(--muted);
+  opacity: 0.78;
+}
+
+.table-time-picker .dp--menu-wrapper,
+.table-time-picker .dp--menu-wrapper[data-dp-mobile] {
+  z-index: 80;
+}
+
+.dp--menu-wrapper,
+.dp--menu-wrapper[data-dp-mobile] {
+  z-index: 80;
+}
+
+.dp--menu {
+  --dp-menu-border-color: rgba(196, 109, 76, 0.18);
+  --dp-border-color: var(--line);
+  --dp-hover-color: rgba(201, 122, 87, 0.1);
+  --dp-hover-text-color: var(--text);
+  --dp-primary-color: var(--accent);
+  --dp-primary-text-color: #fff7f2;
+  --dp-highlight-color: rgba(201, 122, 87, 0.12);
+}
+
+.table-time-picker .dp--menu {
+  border-radius: 8px;
+  box-shadow: 0 18px 40px rgba(47, 40, 31, 0.16);
+  backdrop-filter: blur(14px);
+}
+
+.dp--menu {
+  border-radius: 8px;
+  box-shadow: 0 18px 40px rgba(47, 40, 31, 0.16);
+  backdrop-filter: blur(14px);
+}
+
+.table-time-picker .dp--menu-inner {
+  padding: 10px;
+}
+
+.table-time-picker .dp--month-year-row {
+  margin-bottom: 6px;
+}
+
+.dp--menu .dp--month-year-row {
+  margin-bottom: 6px;
+}
+
+.table-time-picker .dp--month-year-wrap {
+  gap: 6px;
+}
+
+.dp--menu .dp--month-year-wrap {
+  gap: 6px;
+}
+
+.table-time-picker .dp--month-year-select-base {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.dp--menu .dp--month-year-select-base {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.table-time-picker .dp--inner-nav {
+  border: 1px solid rgba(196, 109, 76, 0.14);
+  background: rgba(252, 247, 241, 0.82);
+}
+
+.dp--menu .dp--inner-nav {
+  border: 1px solid rgba(196, 109, 76, 0.14);
+  background: rgba(252, 247, 241, 0.82);
+}
+
+.table-time-picker .dp--inner-nav:hover {
+  border-color: rgba(196, 109, 76, 0.28);
+}
+
+.dp--menu .dp--inner-nav:hover {
+  border-color: rgba(196, 109, 76, 0.28);
+}
+
+.table-time-picker .dp--calendar-header {
+  margin-bottom: 2px;
+}
+
+.dp--menu .dp--calendar-header {
+  margin-bottom: 2px;
+}
+
+.table-time-picker .dp--calendar-header-item {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.dp--menu .dp--calendar-header-item {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.table-time-picker .dp--calendar-header-cell {
+  border-bottom-color: rgba(196, 109, 76, 0.1);
+}
+
+.dp--menu .dp--calendar-header-cell {
+  border-bottom-color: rgba(196, 109, 76, 0.1);
+}
+
+.table-time-picker .dp--calendar-row {
+  margin: 1px 0;
+}
+
+.dp--menu .dp--calendar-row {
+  margin: 1px 0;
+}
+
+.table-time-picker .dp--cell-inner {
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-color: transparent;
+}
+
+.dp--menu .dp--cell-inner {
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-color: transparent;
+}
+
+.table-time-picker .dp--date-hoverable:hover {
+  background: rgba(201, 122, 87, 0.12);
+  color: var(--text);
+  border-color: rgba(196, 109, 76, 0.18);
+}
+
+.dp--menu .dp--date-hoverable:hover {
+  background: rgba(201, 122, 87, 0.12);
+  color: var(--text);
+  border-color: rgba(196, 109, 76, 0.18);
+}
+
+.table-time-picker .dp--cell-inner.dp--active,
+.table-time-picker .dp--cell-inner.dp--active:hover,
+.table-time-picker .dp--active,
+.table-time-picker .dp--active:hover,
+.table-time-picker .dp--active.dp--date-hoverable:hover {
+  background: color-mix(in srgb, var(--accent) 92%, white 8%) !important;
+  color: #fff7f2 !important;
+  border-color: color-mix(in srgb, var(--accent) 72%, rgba(255, 255, 255, 0.35) 28%) !important;
+  box-shadow: 0 8px 18px rgba(196, 109, 76, 0.22) !important;
+}
+
+.dp--menu .dp--cell-inner.dp--active,
+.dp--menu .dp--cell-inner.dp--active:hover,
+.dp--menu .dp--active,
+.dp--menu .dp--active:hover,
+.dp--menu .dp--active.dp--date-hoverable:hover {
+  background: color-mix(in srgb, var(--accent) 92%, white 8%) !important;
+  color: #fff7f2 !important;
+  border-color: color-mix(in srgb, var(--accent) 72%, rgba(255, 255, 255, 0.35) 28%) !important;
+  box-shadow: 0 8px 18px rgba(196, 109, 76, 0.22) !important;
+}
+
+.table-time-picker .dp--range-between,
+.table-time-picker .dp--cell-in-between {
+  background: rgba(201, 122, 87, 0.12);
+  color: var(--text);
+  border-color: rgba(201, 122, 87, 0.08);
+}
+
+.table-time-picker .dp--today {
+  border-color: rgba(196, 109, 76, 0.42);
+  color: var(--accent);
+}
+
+.dp--menu .dp--today {
+  border-color: rgba(196, 109, 76, 0.42);
+  color: var(--accent);
+}
+
+.table-time-picker .dp--today:not(.dp--active) {
+  background: rgba(201, 122, 87, 0.06);
+}
+
+.dp--menu .dp--today:not(.dp--active) {
+  background: rgba(201, 122, 87, 0.06);
+}
+
+.table-time-picker .dp__cell_inner,
+.table-time-picker .dp__active_date,
+.table-time-picker .dp__today,
+.table-time-picker .dp__calendar_item,
+.table-time-picker .dp__overlay_cell,
+.table-time-picker .dp__pointer {
+  outline-color: transparent;
+}
+
+.table-time-picker .dp--action-row {
+  border-top: 1px solid rgba(196, 109, 76, 0.1);
+  margin-top: 8px;
+}
+
+.table-time-picker .dp--action-button {
+  min-width: 56px;
+  justify-content: center;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.table-time-picker .dp--action-cancel {
+  border-color: var(--line);
+}
+
 .table-chip-field {
   display: grid;
   gap: 8px;
@@ -1079,7 +1356,7 @@ button {
   justify-content: space-between;
   gap: 12px;
   color: var(--text);
-  background: rgba(252, 247, 241, 0.72);
+  background: transparent;
   cursor: pointer;
   transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
 }
@@ -1087,7 +1364,7 @@ button {
 .ui-select-trigger:hover,
 .ui-select-trigger.is-open {
   border-color: rgba(196, 109, 76, 0.26);
-  background: rgba(252, 247, 241, 0.94);
+  background: transparent;
 }
 
 .ui-select-trigger:hover {
@@ -2051,6 +2328,12 @@ button {
 
   .table-chip-field {
     grid-column: 1 / -1;
+  }
+
+  .table-time-field {
+    grid-column: 1 / -1;
+    max-width: none;
+    justify-self: stretch;
   }
 
   .table-filter-actions {

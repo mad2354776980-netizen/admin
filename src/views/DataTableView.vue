@@ -49,6 +49,34 @@
             >
           </div>
         </div>
+        <label class="table-select-field table-time-field">
+          <span class="table-select-label">开始时间</span>
+          <VueDatePicker
+            v-model="startDate"
+            class="table-time-picker"
+            auto-apply
+            clearable
+            :formats="datePickerFormats"
+            :locale="datePickerLocale"
+            :time-config="datePickerTimeConfig"
+            placeholder="选择开始时间"
+            teleport
+          />
+        </label>
+        <label class="table-select-field table-time-field">
+          <span class="table-select-label">结束时间</span>
+          <VueDatePicker
+            v-model="endDate"
+            class="table-time-picker"
+            auto-apply
+            clearable
+            :formats="datePickerFormats"
+            :locale="datePickerLocale"
+            :time-config="datePickerTimeConfig"
+            placeholder="选择结束时间"
+            teleport
+          />
+        </label>
         <label class="table-select-field table-chip-field">
           <span class="table-select-label">客户分层</span>
           <UiMultiSelect
@@ -261,10 +289,23 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { zhCN as datePickerLocale } from 'date-fns/locale'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
 import UiMultiSelect from '../components/UiMultiSelect.vue'
 import UiSelect from '../components/UiSelect.vue'
+
+const datePickerFormats = {
+  input: 'yyyy/MM/dd HH:mm:ss'
+}
+
+const datePickerTimeConfig = {
+  enableTimePicker: true,
+  enableSeconds: true,
+  is24: true
+}
 
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
 const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
@@ -276,6 +317,8 @@ const activeChannel = ref('全部')
 const activeSegments = ref([])
 const keyword = ref('')
 const ownerKeyword = ref('')
+const startDate = ref(null)
+const endDate = ref(null)
 const selectedRowIds = ref([])
 const isEditorOpen = ref(false)
 const editingRowId = ref('')
@@ -588,6 +631,11 @@ const filteredRows = computed(() => {
     const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.indexOf(row.segment) !== -1
     // noinspection JSUnresolvedReference
     const matchesOwner = !ownerKeyword.value || row.owner.toLowerCase().includes(ownerKeyword.value.toLowerCase())
+    const rowDateValue = getRowDateValue(row.id)
+    const startDateValue = startDate.value ? startDate.value.getTime() : 0
+    const endDateValue = endDate.value ? endDate.value.getTime() : 0
+    const matchesStartTime = !startDateValue || rowDateValue >= startDateValue
+    const matchesEndTime = !endDateValue || rowDateValue <= endDateValue
     // noinspection JSUnresolvedReference
     const matchesKeyword = String([
       row.id,
@@ -598,7 +646,13 @@ const filteredRows = computed(() => {
       row.segment
     ].join(' ')).toLowerCase().includes(normalizedKeyword)
 
-    return matchesStatus && matchesChannel && matchesSegment && matchesOwner && matchesKeyword
+    return matchesStatus
+      && matchesChannel
+      && matchesSegment
+      && matchesOwner
+      && matchesStartTime
+      && matchesEndTime
+      && matchesKeyword
   })
 })
 
@@ -619,6 +673,8 @@ function resetFilters() {
   activeChannel.value = '全部'
   activeSegments.value = []
   ownerKeyword.value = ''
+  startDate.value = null
+  endDate.value = null
   selectedRowIds.value = []
 }
 
@@ -653,6 +709,14 @@ function statusClass(status) {
     'is-done': status === '已完成',
     'is-risk': status === '风险'
   }
+}
+
+function getRowDateValue(orderId) {
+  const suffixValue = Number(String(orderId).slice(-2)) || 0
+  const baseDate = new Date(2026, 6, 6, 9, 30, 0)
+  baseDate.setDate(baseDate.getDate() - (suffixValue % 12))
+  baseDate.setHours(9 + (suffixValue % 9), (suffixValue * 7) % 60, (suffixValue * 11) % 60, 0)
+  return baseDate.getTime()
 }
 
 function createEmptyEditor() {
