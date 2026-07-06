@@ -982,6 +982,20 @@ button {
   justify-content: flex-end;
 }
 
+.table-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.table-summary-text {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
 .table-filter-bar {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1648,7 +1662,7 @@ button {
 }
 
 .table-demo-footer {
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 18px;
   color: var(--muted);
   font-size: 0.82rem;
@@ -2359,48 +2373,47 @@ button {
   }
 
   .table-demo-scroll {
-    overflow: visible;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .table-demo-shell {
-    min-width: 0;
-    border-top: 0;
-    gap: 12px;
+    min-width: 860px;
+    border-top: 1px solid var(--line);
+    gap: 0;
   }
 
   .table-demo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-    gap: 12px 14px;
-    min-width: 0;
-    min-height: 0;
-    padding: 14px 12px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: rgba(252, 247, 241, 0.72);
+    grid-template-columns: 34px minmax(138px, 1.18fr) minmax(132px, 1.08fr) minmax(96px, 0.8fr) minmax(92px, 0.78fr) minmax(88px, 0.72fr) minmax(86px, 0.68fr) minmax(88px, 0.72fr);
+    align-items: center;
+    gap: 12px;
+    min-width: auto;
+    min-height: 68px;
+    padding: 12px 8px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
   }
 
   .table-demo-grid.table-header {
-    display: none;
+    display: grid;
   }
 
   .table-cell {
-    display: grid;
-    gap: 6px;
+    display: block;
+    gap: 0;
   }
 
   .table-cell::before {
-    content: attr(data-label);
-    color: var(--muted);
-    font-size: 0.74rem;
-    line-height: 1.2;
+    content: none;
   }
 
   .table-cell-checkbox {
-    grid-column: 1;
-    justify-content: flex-start;
+    grid-column: auto;
+    justify-content: center;
     gap: 0;
-    align-self: center;
+    align-self: auto;
   }
 
   .table-cell-checkbox::before {
@@ -2408,25 +2421,25 @@ button {
   }
 
   .table-cell-order {
-    grid-column: 1;
+    grid-column: auto;
     gap: 4px;
   }
 
   .table-cell-status {
-    grid-column: 2;
-    justify-items: end;
-    align-content: start;
+    grid-column: auto;
+    justify-items: start;
+    align-content: center;
   }
 
   .table-cell-customer {
-    grid-column: 1 / -1;
+    grid-column: auto;
     gap: 4px;
   }
 
   .table-cell-amount,
   .table-cell-owner,
   .table-cell-updated {
-    align-content: start;
+    align-content: center;
   }
 
   .table-cell-amount strong {
@@ -2436,13 +2449,13 @@ button {
   }
 
   .table-cell-action {
-    grid-column: 1 / -1;
+    grid-column: auto;
     justify-content: flex-start;
-    align-items: start;
-    gap: 0;
-    margin-top: 2px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(61, 49, 40, 0.08);
+    align-items: center;
+    gap: 12px;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
   }
 
   .table-cell-action::before {
@@ -2584,9 +2597,9 @@ button {
 
 @media (max-width: 560px) {
   .table-demo-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 14px 12px;
+    grid-template-columns: 34px minmax(138px, 1.18fr) minmax(132px, 1.08fr) minmax(96px, 0.8fr) minmax(92px, 0.78fr) minmax(88px, 0.72fr) minmax(86px, 0.68fr) minmax(88px, 0.72fr);
+    gap: 12px;
+    padding: 12px 8px;
   }
 
   .table-cell-checkbox,

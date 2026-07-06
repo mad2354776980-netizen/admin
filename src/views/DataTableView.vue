@@ -95,6 +95,7 @@
 
     <section class="panel content-panel" aria-label="数据表格内容区域">
       <div class="table-head">
+        <span class="table-summary-text">共 {{ filteredRows.length }} 条记录，已选 {{ selectedVisibleCount }} 条</span>
         <UiButton class="table-create-button" variant="primary" @click="createOrder">新增订单</UiButton>
       </div>
 
@@ -170,7 +171,6 @@
       </div>
 
       <div class="table-demo-footer">
-        <span>共 {{ filteredRows.length }} 条记录，已选 {{ selectedVisibleCount }} 条</span>
         <div class="button-toolbar">
           <UiButton disabled>上一页</UiButton>
           <UiButton variant="primary">1</UiButton>
