@@ -158,6 +158,7 @@
       </main>
     </div>
   </div>
+  <UiMessageHost />
 </template>
 
 <script setup>
@@ -167,6 +168,7 @@ import profileAvatar from './assets/profile-avatar.png'
 import HeaderLogo from './components/HeaderLogo.vue'
 import SidebarNav from './components/SidebarNav.vue'
 import UiButton from './components/UiButton.vue'
+import UiMessageHost from './components/UiMessageHost.vue'
 import { initialOpenMenus, navGroups } from './config/navigation'
 
 const MOBILE_NAV_STORAGE_KEY = 'admin-demo.mobile-nav.open'

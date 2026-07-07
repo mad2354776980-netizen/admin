@@ -313,6 +313,7 @@ import UiCheckbox from '../components/UiCheckbox.vue'
 import UiDateTimePicker from '../components/UiDateTimePicker.vue'
 import UiMultiSelect from '../components/UiMultiSelect.vue'
 import UiSelect from '../components/UiSelect.vue'
+import { showErrorMessage, showSuccessMessage } from '../components/uiMessage'
 
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
 const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
@@ -849,6 +850,7 @@ async function saveEditor() {
       ]
 
       closeEditor(true)
+      showSuccessMessage('订单已保存')
       return
     }
 
@@ -866,6 +868,9 @@ async function saveEditor() {
     })
 
     closeEditor(true)
+    showSuccessMessage('订单已保存')
+  } catch {
+    showErrorMessage('保存失败，请稍后重试')
   } finally {
     isSavingRow.value = false
   }
@@ -895,6 +900,9 @@ async function confirmDelete() {
 
     deleteRow(pendingDeleteRow.value.id)
     closeDeleteConfirm()
+    showSuccessMessage('订单已删除')
+  } catch {
+    showErrorMessage('删除失败，请稍后重试')
   } finally {
     isDeletingRow.value = false
   }
