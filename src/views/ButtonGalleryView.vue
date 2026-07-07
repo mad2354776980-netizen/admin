@@ -52,6 +52,18 @@
           <UiButton variant="primary">发布变更</UiButton>
         </div>
       </section>
+
+      <section class="showcase-section">
+        <div class="section-head">
+          <strong>操作按钮</strong>
+          <span>Table actions</span>
+        </div>
+        <div class="button-row">
+          <UiButton class="table-action-button">查看</UiButton>
+          <UiButton class="table-action-button">编辑</UiButton>
+          <UiButton class="table-action-button table-action-button-danger">删除</UiButton>
+        </div>
+      </section>
     </div>
   </section>
 </template>
