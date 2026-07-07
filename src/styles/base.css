@@ -1781,6 +1781,55 @@ button {
   background-clip: padding-box;
 }
 
+.table-confirm-modal {
+  width: min(420px, calc(100vw - 32px));
+  max-height: none;
+  grid-template-rows: auto 1fr auto;
+}
+
+.table-confirm-body {
+  display: grid;
+  gap: 14px;
+}
+
+.table-confirm-body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+
+.table-confirm-meta {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--accent-soft) 14%);
+}
+
+.table-confirm-meta div {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.table-confirm-meta dt,
+.table-confirm-meta dd {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.table-confirm-meta dt {
+  color: var(--muted);
+}
+
+.table-confirm-meta dd {
+  color: var(--text);
+}
+
 .table-editor-actions {
   justify-content: flex-end;
   gap: 12px;
@@ -2141,6 +2190,14 @@ button {
 .primary-button:disabled {
   color: rgba(255, 247, 242, 0.82);
   background: rgba(196, 109, 76, 0.5);
+}
+
+.ui-button.is-loading.primary-button,
+.ui-button.is-loading.primary-button:hover,
+.ui-button.is-loading.primary-button:disabled,
+.ui-button.is-loading.primary-button:disabled:hover {
+  color: #fff7f2;
+  background: var(--accent);
 }
 
 .ghost-button:disabled:hover,

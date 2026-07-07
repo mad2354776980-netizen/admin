@@ -137,7 +137,7 @@
               <UiButton
                 class="table-action-button table-action-button-danger"
                 @mousedown.prevent
-                @click.stop="deleteRow(row.id)"
+                @click.stop="openDeleteConfirm(row)"
               >
                 删除
               </UiButton>
@@ -164,11 +164,11 @@
     <Teleport to="body">
       <Transition name="table-editor-scrim">
         <button
-          v-if="isEditorOpen"
+          v-if="isDialogOpen"
           class="table-editor-scrim"
           type="button"
-          aria-label="关闭编辑弹窗"
-          @click="closeEditor"
+          :aria-label="isDeleteConfirmOpen ? '关闭删除确认弹窗' : '关闭编辑弹窗'"
+          @click="closeActiveDialog"
         ></button>
       </Transition>
 
@@ -263,6 +263,45 @@
           </div>
         </div>
       </Transition>
+
+      <Transition name="table-editor-modal">
+        <div
+          v-if="isDeleteConfirmOpen"
+          class="table-editor-modal table-confirm-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="删除订单确认弹窗"
+        >
+          <div class="table-editor-head">
+            <div class="table-editor-copy">
+              <strong>确认删除</strong>
+              <span>{{ pendingDeleteRow ? pendingDeleteRow.id : '未选择订单' }}</span>
+            </div>
+            <UiButton class="table-editor-close" icon aria-label="关闭删除确认弹窗" @click="closeDeleteConfirm">
+              ×
+            </UiButton>
+          </div>
+
+          <div class="table-confirm-body">
+            <p>删除后该订单将从当前列表移除，且无法恢复。</p>
+            <dl v-if="pendingDeleteRow" class="table-confirm-meta">
+              <div>
+                <dt>客户名称</dt>
+                <dd>{{ pendingDeleteRow.customer }}</dd>
+              </div>
+              <div>
+                <dt>订单状态</dt>
+                <dd>{{ pendingDeleteRow.status }}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="table-editor-actions">
+            <UiButton :disabled="isDeletingRow" @click="closeDeleteConfirm">取消</UiButton>
+            <UiButton variant="primary" :loading="isDeletingRow" @click="confirmDelete">确认删除</UiButton>
+          </div>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -289,6 +328,8 @@ const startDate = ref(null)
 const endDate = ref(null)
 const selectedRowIds = ref([])
 const isEditorOpen = ref(false)
+const pendingDeleteRow = ref(null)
+const isDeletingRow = ref(false)
 const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
 const blockedScrollKeys = [' ', 'PageUp', 'PageDown', 'Home', 'End']
@@ -631,6 +672,8 @@ const visibleRowIds = computed(() => filteredRows.value.map((row) => row.id))
 const selectedVisibleCount = computed(() => visibleRowIds.value.filter((id) => selectedRowIds.value.includes(id)).length)
 const allVisibleRowsSelected = computed(() => visibleRowIds.value.length > 0 && selectedVisibleCount.value === visibleRowIds.value.length)
 const hasPartialVisibleSelection = computed(() => selectedVisibleCount.value > 0 && !allVisibleRowsSelected.value)
+const isDeleteConfirmOpen = computed(() => Boolean(pendingDeleteRow.value))
+const isDialogOpen = computed(() => isEditorOpen.value || isDeleteConfirmOpen.value)
 
 function applyFilters() {
   return filteredRows.value
@@ -758,6 +801,27 @@ function closeEditor() {
   editForm.value = createEmptyEditor()
 }
 
+function openDeleteConfirm(row) {
+  pendingDeleteRow.value = { ...row }
+}
+
+function closeDeleteConfirm() {
+  if (isDeletingRow.value) {
+    return
+  }
+
+  pendingDeleteRow.value = null
+}
+
+function closeActiveDialog() {
+  if (isDeleteConfirmOpen.value) {
+    closeDeleteConfirm()
+    return
+  }
+
+  closeEditor()
+}
+
 function saveEditor() {
   if (!editingRowId.value) {
     rows.value = [
@@ -798,6 +862,25 @@ function deleteRow(id) {
   }
 }
 
+async function confirmDelete() {
+  if (!pendingDeleteRow.value || isDeletingRow.value) {
+    return
+  }
+
+  isDeletingRow.value = true
+
+  try {
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, 600)
+    })
+
+    deleteRow(pendingDeleteRow.value.id)
+    closeDeleteConfirm()
+  } finally {
+    isDeletingRow.value = false
+  }
+}
+
 function getScrollableEditorContainer(target) {
   if (!(target instanceof Element)) {
     return null
@@ -824,7 +907,7 @@ function canScrollEditor(container, deltaY) {
 }
 
 function handleLockedWheel(event) {
-  if (!isEditorOpen.value) {
+  if (!isDialogOpen.value) {
     return
   }
 
@@ -837,7 +920,7 @@ function handleLockedWheel(event) {
 }
 
 function handleLockedKeydown(event) {
-  if (!isEditorOpen.value) {
+  if (!isDialogOpen.value) {
     return
   }
 
@@ -855,6 +938,10 @@ function handleLockedKeydown(event) {
   if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !isTypingTarget) {
     event.preventDefault()
   }
+
+  if (event.key === 'Escape') {
+    closeActiveDialog()
+  }
 }
 
 function handleLockedTouchStart(event) {
@@ -863,7 +950,7 @@ function handleLockedTouchStart(event) {
 }
 
 function handleLockedTouchMove(event) {
-  if (!isEditorOpen.value) {
+  if (!isDialogOpen.value) {
     return
   }
 
@@ -891,7 +978,7 @@ function setPageScrollLocked(locked) {
   window[method]('touchmove', handleLockedTouchMove, { passive: false })
 }
 
-watch(isEditorOpen, (nextValue) => {
+watch(isDialogOpen, (nextValue) => {
   setPageScrollLocked(nextValue)
 })
 
