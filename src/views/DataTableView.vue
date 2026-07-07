@@ -185,7 +185,7 @@
               <strong>编辑订单</strong>
               <span>{{ editForm.id || '未选择订单' }}</span>
             </div>
-            <UiButton class="table-editor-close" icon aria-label="关闭编辑弹窗" @click="closeEditor">
+            <UiButton class="table-editor-close" icon :disabled="isSavingRow" aria-label="关闭编辑弹窗" @click="closeEditor">
               ×
             </UiButton>
           </div>
@@ -258,8 +258,8 @@
           </div>
 
           <div class="table-editor-actions">
-            <UiButton @click="closeEditor">取消</UiButton>
-            <UiButton variant="primary" @click="saveEditor">保存</UiButton>
+            <UiButton :disabled="isSavingRow" @click="closeEditor">取消</UiButton>
+            <UiButton variant="primary" :loading="isSavingRow" @click="saveEditor">保存</UiButton>
           </div>
         </div>
       </Transition>
@@ -329,6 +329,7 @@ const endDate = ref(null)
 const selectedRowIds = ref([])
 const isEditorOpen = ref(false)
 const pendingDeleteRow = ref(null)
+const isSavingRow = ref(false)
 const isDeletingRow = ref(false)
 const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
@@ -795,7 +796,11 @@ function createOrder() {
   }
 }
 
-function closeEditor() {
+function closeEditor(forceClose) {
+  if (isSavingRow.value && !forceClose) {
+    return
+  }
+
   isEditorOpen.value = false
   editingRowId.value = ''
   editForm.value = createEmptyEditor()
@@ -822,34 +827,48 @@ function closeActiveDialog() {
   closeEditor()
 }
 
-function saveEditor() {
-  if (!editingRowId.value) {
-    rows.value = [
-      {
-        ...editForm.value,
-        updatedAt: '刚刚'
-      },
-      ...rows.value
-    ]
-
-    closeEditor()
+async function saveEditor() {
+  if (isSavingRow.value) {
     return
   }
 
-  rows.value = rows.value.map((row) => {
-    // noinspection JSUnresolvedReference
-    if (row.id !== editingRowId.value) {
-      return row
+  isSavingRow.value = true
+
+  try {
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, 600)
+    })
+
+    if (!editingRowId.value) {
+      rows.value = [
+        {
+          ...editForm.value,
+          updatedAt: '刚刚'
+        },
+        ...rows.value
+      ]
+
+      closeEditor(true)
+      return
     }
 
-    return {
-      ...row,
-      ...editForm.value,
-      updatedAt: '刚刚'
-    }
-  })
+    rows.value = rows.value.map((row) => {
+      // noinspection JSUnresolvedReference
+      if (row.id !== editingRowId.value) {
+        return row
+      }
 
-  closeEditor()
+      return {
+        ...row,
+        ...editForm.value,
+        updatedAt: '刚刚'
+      }
+    })
+
+    closeEditor(true)
+  } finally {
+    isSavingRow.value = false
+  }
 }
 
 function deleteRow(id) {
