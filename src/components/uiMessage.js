@@ -51,5 +51,6 @@ function pushMessage(input) {
 }
 
 function removeMessage(id) {
+  // noinspection JSUnresolvedReference
   messageState.items = messageState.items.filter((item) => item.id !== id)
 }

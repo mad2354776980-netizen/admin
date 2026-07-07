@@ -125,6 +125,7 @@ function selectOption(value) {
 }
 
 function updateMenuPosition() {
+  // noinspection JSUnresolvedReference
   if (!isOpen.value || !triggerRef.value || typeof window === 'undefined') {
     return
   }
@@ -151,6 +152,7 @@ function handlePointerDown(event) {
     return
   }
 
+  // noinspection JSUnresolvedReference
   if (menuRef.value && menuRef.value.contains(event.target)) {
     return
   }
