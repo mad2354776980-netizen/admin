@@ -3,10 +3,11 @@
     <button
       ref="triggerRef"
       class="ui-select-trigger"
-      :class="{ 'is-open': isOpen }"
+      :class="{ 'is-open': isOpen, 'is-loading': loading }"
       type="button"
       :aria-expanded="String(isOpen)"
       aria-haspopup="listbox"
+      :aria-busy="String(loading)"
       @click="toggleOpen"
       @keydown.esc.prevent="close"
     >
@@ -24,7 +25,12 @@
           role="listbox"
           :aria-label="label"
         >
+          <div v-if="loading" class="ui-select-loading" role="status" aria-live="polite">
+            <span class="ui-select-loading-spinner" aria-hidden="true"></span>
+            <span>{{ loadingText }}</span>
+          </div>
           <button
+            v-else
             v-for="option in normalizedOptions"
             :key="option.value"
             class="ui-select-option"
@@ -62,6 +68,14 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: '请选择'
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  loadingText: {
+    type: String,
+    default: '加载中...'
   },
   menuMaxHeight: {
     type: [Number, String],
@@ -120,6 +134,10 @@ function close() {
 }
 
 function selectOption(value) {
+  if (props.loading) {
+    return
+  }
+
   emit('update:modelValue', value)
   close()
 }

@@ -27,6 +27,8 @@
             :options="statuses"
             label="状态筛选"
             placeholder="请选择状态"
+            :loading="isStatusLoading"
+            loading-text="正在加载状态选项..."
           />
         </label>
         <label class="table-select-field">
@@ -312,7 +314,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
 import UiDateTimePicker from '../components/UiDateTimePicker.vue'
@@ -325,6 +327,7 @@ const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', '
 const segments = ['高价值客户', '重点培育', '成熟客户', '续费客户', '风险观察']
 const editableStatuses = statuses.filter((status) => status !== '全部')
 const editableChannels = channels.filter((channel) => channel !== '全部')
+const isStatusLoading = ref(true)
 const activeStatus = ref('全部')
 const activeChannel = ref('全部')
 const activeSegments = ref([])
@@ -341,6 +344,7 @@ const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
 const blockedScrollKeys = [' ', 'PageUp', 'PageDown', 'Home', 'End']
 let touchStartY = 0
+let statusLoadingTimer = 0
 
 const rows = ref([
   {
@@ -1025,7 +1029,17 @@ watch(isDialogOpen, (nextValue) => {
   setPageScrollLocked(nextValue)
 })
 
+onMounted(() => {
+  statusLoadingTimer = window.setTimeout(() => {
+    isStatusLoading.value = false
+  }, 5000)
+})
+
 onBeforeUnmount(() => {
+  if (statusLoadingTimer) {
+    window.clearTimeout(statusLoadingTimer)
+  }
+
   setPageScrollLocked(false)
 })
 </script>

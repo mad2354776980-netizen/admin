@@ -1444,6 +1444,10 @@ button {
   transform: rotate(180deg);
 }
 
+.ui-select-trigger.is-loading .ui-select-arrow::before {
+  opacity: 0.52;
+}
+
 .ui-select-menu {
   position: fixed;
   z-index: 90;
@@ -1477,6 +1481,26 @@ button {
 .ui-select-menu::-webkit-scrollbar-thumb:hover {
   background: rgba(137, 122, 108, 0.42);
   background-clip: padding-box;
+}
+
+.ui-select-loading {
+  min-height: 38px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.ui-select-loading-spinner {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ui-button-spin 720ms linear infinite;
 }
 
 .ui-select-option {
