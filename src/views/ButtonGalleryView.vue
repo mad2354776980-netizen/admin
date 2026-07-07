@@ -36,7 +36,7 @@
             <span aria-hidden="true">☰</span>
           </UiButton>
           <UiButton variant="avatar" aria-label="个人资料">
-            <span class="avatar-image" aria-hidden="true">MX</span>
+            <span class="avatar-image" aria-hidden="true"></span>
           </UiButton>
         </div>
       </section>
