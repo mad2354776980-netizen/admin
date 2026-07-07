@@ -291,18 +291,18 @@ button {
 
 .topbar-icon-button:hover,
 .theme-switcher.is-expanded .topbar-icon-button {
-  border-color: rgba(196, 109, 76, 0.22);
-  background: rgba(252, 247, 241, 0.88);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--surface) 82%, var(--accent-soft) 18%);
   box-shadow: none;
 }
 
 .theme-switcher.is-expanded .topbar-icon-button {
   transform: translateY(34px) scale(1.68);
-  border-color: rgba(196, 109, 76, 0.26);
-  background: rgba(252, 247, 241, 0.96);
+  border-color: color-mix(in srgb, var(--accent) 34%, transparent 66%);
+  background: color-mix(in srgb, var(--surface-strong) 90%, white 10%);
   box-shadow:
-    0 0 0 3px rgba(251, 248, 243, 0.98),
-    0 14px 28px rgba(36, 29, 24, 0.16);
+    0 0 0 3px color-mix(in srgb, var(--surface-strong) 92%, white 8%),
+    0 14px 28px color-mix(in srgb, var(--text) 12%, transparent 88%);
   z-index: 65;
 }
 
@@ -313,8 +313,8 @@ button {
 }
 
 .topbar-icon-button.ghost-button:hover {
-  border-color: rgba(196, 109, 76, 0.22);
-  background: rgba(252, 247, 241, 0.88);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--surface) 82%, var(--accent-soft) 18%);
 }
 
 .theme-gear {
@@ -337,8 +337,8 @@ button {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(251, 248, 243, 0.98);
-  box-shadow: 0 18px 44px rgba(36, 29, 24, 0.12);
+  background: color-mix(in srgb, var(--surface-strong) 92%, white 8%);
+  box-shadow: 0 18px 44px color-mix(in srgb, var(--text) 10%, transparent 90%);
   backdrop-filter: blur(10px);
   transform: translateX(-50%);
 }
@@ -381,8 +381,8 @@ button {
 
 .logo-option:hover,
 .logo-option.is-active {
-  border-color: rgba(196, 109, 76, 0.18);
-  background: rgba(252, 247, 241, 0.76);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--surface) 78%, var(--accent-soft) 22%);
   transform: translateY(-1px);
 }
 
@@ -408,8 +408,8 @@ button {
 
 .theme-option:hover,
 .theme-option.is-active {
-  border-color: rgba(196, 109, 76, 0.18);
-  background: rgba(252, 247, 241, 0.76);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--surface) 78%, var(--accent-soft) 22%);
   transform: translateY(-1px);
 }
 
@@ -1059,7 +1059,7 @@ button {
 }
 
 .table-time-field,
-.table-time-picker {
+.ui-date-time-picker {
   width: 100%;
   min-width: 0;
 }
@@ -1070,7 +1070,7 @@ button {
   justify-self: start;
 }
 
-.table-time-picker {
+.ui-date-time-picker {
   --dp-border-radius: 4px;
   --dp-cell-border-radius: 4px;
   --dp-font-size: 0.91rem;
@@ -1102,13 +1102,13 @@ button {
   --dp-menu-padding: 10px;
 }
 
-.table-time-picker .dp__main,
-.table-time-picker .dp--theme-light,
-.table-time-picker .dp--theme-dark {
+.ui-date-time-picker .dp__main,
+.ui-date-time-picker .dp--theme-light,
+.ui-date-time-picker .dp--theme-dark {
   width: 100%;
 }
 
-.table-time-picker .dp--input {
+.ui-date-time-picker .dp--input {
   min-height: 40px;
   border-radius: 4px;
   box-shadow: none;
@@ -1116,13 +1116,13 @@ button {
   font-size: 0.82rem;
 }
 
-.table-time-picker .dp--input::placeholder {
+.ui-date-time-picker .dp--input::placeholder {
   color: var(--muted);
   opacity: 0.78;
 }
 
-.table-time-picker .dp--menu-wrapper,
-.table-time-picker .dp--menu-wrapper[data-dp-mobile] {
+.ui-date-time-picker .dp--menu-wrapper,
+.ui-date-time-picker .dp--menu-wrapper[data-dp-mobile] {
   z-index: 80;
 }
 
@@ -1141,7 +1141,7 @@ button {
   --dp-highlight-color: rgba(201, 122, 87, 0.12);
 }
 
-.table-time-picker .dp--menu {
+.ui-date-time-picker .dp--menu {
   border-radius: 8px;
   box-shadow: 0 18px 40px rgba(47, 40, 31, 0.16);
   backdrop-filter: blur(14px);
@@ -1153,11 +1153,11 @@ button {
   backdrop-filter: blur(14px);
 }
 
-.table-time-picker .dp--menu-inner {
+.ui-date-time-picker .dp--menu-inner {
   padding: 10px;
 }
 
-.table-time-picker .dp--month-year-row {
+.ui-date-time-picker .dp--month-year-row {
   margin-bottom: 6px;
 }
 
@@ -1165,7 +1165,7 @@ button {
   margin-bottom: 6px;
 }
 
-.table-time-picker .dp--month-year-wrap {
+.ui-date-time-picker .dp--month-year-wrap {
   gap: 6px;
 }
 
@@ -1173,7 +1173,7 @@ button {
   gap: 6px;
 }
 
-.table-time-picker .dp--month-year-select-base {
+.ui-date-time-picker .dp--month-year-select-base {
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0;
@@ -1185,7 +1185,7 @@ button {
   letter-spacing: 0;
 }
 
-.table-time-picker .dp--inner-nav {
+.ui-date-time-picker .dp--inner-nav {
   border: 1px solid rgba(196, 109, 76, 0.14);
   background: rgba(252, 247, 241, 0.82);
 }
@@ -1195,7 +1195,7 @@ button {
   background: rgba(252, 247, 241, 0.82);
 }
 
-.table-time-picker .dp--inner-nav:hover {
+.ui-date-time-picker .dp--inner-nav:hover {
   border-color: rgba(196, 109, 76, 0.28);
 }
 
@@ -1203,7 +1203,7 @@ button {
   border-color: rgba(196, 109, 76, 0.28);
 }
 
-.table-time-picker .dp--calendar-header {
+.ui-date-time-picker .dp--calendar-header {
   margin-bottom: 2px;
 }
 
@@ -1211,7 +1211,7 @@ button {
   margin-bottom: 2px;
 }
 
-.table-time-picker .dp--calendar-header-item {
+.ui-date-time-picker .dp--calendar-header-item {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--muted);
@@ -1223,7 +1223,7 @@ button {
   color: var(--muted);
 }
 
-.table-time-picker .dp--calendar-header-cell {
+.ui-date-time-picker .dp--calendar-header-cell {
   border-bottom-color: rgba(196, 109, 76, 0.1);
 }
 
@@ -1231,7 +1231,7 @@ button {
   border-bottom-color: rgba(196, 109, 76, 0.1);
 }
 
-.table-time-picker .dp--calendar-row {
+.ui-date-time-picker .dp--calendar-row {
   margin: 1px 0;
 }
 
@@ -1239,7 +1239,7 @@ button {
   margin: 1px 0;
 }
 
-.table-time-picker .dp--cell-inner {
+.ui-date-time-picker .dp--cell-inner {
   font-size: 0.8rem;
   font-weight: 500;
   border-color: transparent;
@@ -1251,7 +1251,7 @@ button {
   border-color: transparent;
 }
 
-.table-time-picker .dp--date-hoverable:hover {
+.ui-date-time-picker .dp--date-hoverable:hover {
   background: rgba(201, 122, 87, 0.12);
   color: var(--text);
   border-color: rgba(196, 109, 76, 0.18);
@@ -1263,11 +1263,11 @@ button {
   border-color: rgba(196, 109, 76, 0.18);
 }
 
-.table-time-picker .dp--cell-inner.dp--active,
-.table-time-picker .dp--cell-inner.dp--active:hover,
-.table-time-picker .dp--active,
-.table-time-picker .dp--active:hover,
-.table-time-picker .dp--active.dp--date-hoverable:hover {
+.ui-date-time-picker .dp--cell-inner.dp--active,
+.ui-date-time-picker .dp--cell-inner.dp--active:hover,
+.ui-date-time-picker .dp--active,
+.ui-date-time-picker .dp--active:hover,
+.ui-date-time-picker .dp--active.dp--date-hoverable:hover {
   background: color-mix(in srgb, var(--accent) 92%, white 8%) !important;
   color: #fff7f2 !important;
   border-color: color-mix(in srgb, var(--accent) 72%, rgba(255, 255, 255, 0.35) 28%) !important;
@@ -1285,14 +1285,14 @@ button {
   box-shadow: 0 8px 18px rgba(196, 109, 76, 0.22) !important;
 }
 
-.table-time-picker .dp--range-between,
-.table-time-picker .dp--cell-in-between {
+.ui-date-time-picker .dp--range-between,
+.ui-date-time-picker .dp--cell-in-between {
   background: rgba(201, 122, 87, 0.12);
   color: var(--text);
   border-color: rgba(201, 122, 87, 0.08);
 }
 
-.table-time-picker .dp--today {
+.ui-date-time-picker .dp--today {
   border-color: rgba(196, 109, 76, 0.42);
   color: var(--accent);
 }
@@ -1302,7 +1302,7 @@ button {
   color: var(--accent);
 }
 
-.table-time-picker .dp--today:not(.dp--active) {
+.ui-date-time-picker .dp--today:not(.dp--active) {
   background: rgba(201, 122, 87, 0.06);
 }
 
@@ -1310,28 +1310,28 @@ button {
   background: rgba(201, 122, 87, 0.06);
 }
 
-.table-time-picker .dp__cell_inner,
-.table-time-picker .dp__active_date,
-.table-time-picker .dp__today,
-.table-time-picker .dp__calendar_item,
-.table-time-picker .dp__overlay_cell,
-.table-time-picker .dp__pointer {
+.ui-date-time-picker .dp__cell_inner,
+.ui-date-time-picker .dp__active_date,
+.ui-date-time-picker .dp__today,
+.ui-date-time-picker .dp__calendar_item,
+.ui-date-time-picker .dp__overlay_cell,
+.ui-date-time-picker .dp__pointer {
   outline-color: transparent;
 }
 
-.table-time-picker .dp--action-row {
+.ui-date-time-picker .dp--action-row {
   border-top: 1px solid rgba(196, 109, 76, 0.1);
   margin-top: 8px;
 }
 
-.table-time-picker .dp--action-button {
+.ui-date-time-picker .dp--action-button {
   min-width: 56px;
   justify-content: center;
   font-size: 0.76rem;
   font-weight: 600;
 }
 
-.table-time-picker .dp--action-cancel {
+.ui-date-time-picker .dp--action-cancel {
   border-color: var(--line);
 }
 
@@ -1966,15 +1966,15 @@ button {
 .avatar-button:hover,
 .profile-card.is-expanded .avatar-button {
   transform: translateY(-1px);
-  border-color: rgba(196, 109, 76, 0.22);
-  background: rgba(252, 247, 241, 0.55);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--surface) 84%, var(--accent-soft) 16%);
 }
 
 .profile-card.is-expanded .avatar-button {
   transform: translateY(-1px);
-  border-color: rgba(196, 109, 76, 0.26);
-  background: rgba(252, 247, 241, 0.96);
-  box-shadow: 0 12px 24px rgba(36, 29, 24, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 34%, transparent 66%);
+  background: color-mix(in srgb, var(--surface-strong) 90%, white 10%);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--text) 12%, transparent 88%);
   z-index: 55;
 }
 
@@ -2002,8 +2002,9 @@ button {
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--text);
-  background: rgba(251, 248, 243, 0.98);
-  box-shadow: 0 18px 44px rgba(36, 29, 24, 0.12);
+  background: color-mix(in srgb, var(--surface-strong) 92%, white 8%);
+  box-shadow: 0 18px 44px color-mix(in srgb, var(--text) 10%, transparent 90%);
+  backdrop-filter: blur(14px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -2100,6 +2101,7 @@ button {
 
 .profile-logout:hover {
   color: var(--accent-deep);
+  background: transparent;
 }
 
 .mobile-nav-toggle span {
@@ -2117,8 +2119,8 @@ button {
 }
 
 .ghost-button:hover {
-  border-color: rgba(196, 109, 76, 0.22);
-  background: rgba(252, 247, 241, 0.55);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--surface) 84%, var(--accent-soft) 16%);
 }
 
 .ghost-button:disabled,

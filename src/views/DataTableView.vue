@@ -51,31 +51,11 @@
         </div>
         <label class="table-select-field table-time-field">
           <span class="table-select-label">开始时间</span>
-          <VueDatePicker
-            v-model="startDate"
-            class="table-time-picker"
-            auto-apply
-            clearable
-            :formats="datePickerFormats"
-            :locale="datePickerLocale"
-            :time-config="datePickerTimeConfig"
-            placeholder="选择开始时间"
-            teleport
-          />
+          <UiDateTimePicker v-model="startDate" placeholder="选择开始时间" />
         </label>
         <label class="table-select-field table-time-field">
           <span class="table-select-label">结束时间</span>
-          <VueDatePicker
-            v-model="endDate"
-            class="table-time-picker"
-            auto-apply
-            clearable
-            :formats="datePickerFormats"
-            :locale="datePickerLocale"
-            :time-config="datePickerTimeConfig"
-            placeholder="选择结束时间"
-            teleport
-          />
+          <UiDateTimePicker v-model="endDate" placeholder="选择结束时间" />
         </label>
         <label class="table-select-field table-chip-field">
           <span class="table-select-label">客户分层</span>
@@ -289,23 +269,11 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import { zhCN as datePickerLocale } from 'date-fns/locale'
-import { VueDatePicker } from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
+import UiDateTimePicker from '../components/UiDateTimePicker.vue'
 import UiMultiSelect from '../components/UiMultiSelect.vue'
 import UiSelect from '../components/UiSelect.vue'
-
-const datePickerFormats = {
-  input: 'yyyy/MM/dd HH:mm:ss'
-}
-
-const datePickerTimeConfig = {
-  enableTimePicker: true,
-  enableSeconds: true,
-  is24: true
-}
 
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
 const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
@@ -631,6 +599,7 @@ const filteredRows = computed(() => {
     const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.indexOf(row.segment) !== -1
     // noinspection JSUnresolvedReference
     const matchesOwner = !ownerKeyword.value || row.owner.toLowerCase().includes(ownerKeyword.value.toLowerCase())
+    // noinspection JSUnresolvedReference
     const rowDateValue = getRowDateValue(row.id)
     const startDateValue = startDate.value ? startDate.value.getTime() : 0
     const endDateValue = endDate.value ? endDate.value.getTime() : 0
