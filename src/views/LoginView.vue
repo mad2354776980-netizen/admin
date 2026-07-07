@@ -33,8 +33,7 @@
 
         <div class="login-meta">
           <label class="login-check">
-            <input v-model="remember" type="checkbox">
-            <span>记住登录状态</span>
+            <UiCheckbox v-model="remember">记住登录状态</UiCheckbox>
           </label>
           <button class="login-link" type="button">忘记密码</button>
         </div>
@@ -54,6 +53,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import HeaderLogo from '../components/HeaderLogo.vue'
 import UiButton from '../components/UiButton.vue'
+import UiCheckbox from '../components/UiCheckbox.vue'
 
 const router = useRouter()
 const account = ref('admin-demo')
@@ -76,12 +76,12 @@ function handleLogin() {
 .login-panel {
   width: min(100%, 420px);
   padding: 32px 30px 28px;
-  border: 1px solid rgba(61, 49, 40, 0.14);
+  border: 1px solid var(--line);
   border-radius: 8px;
   display: grid;
   gap: 24px;
-  background: rgba(251, 248, 243, 0.98);
-  box-shadow: 0 20px 50px rgba(36, 29, 24, 0.1);
+  background: color-mix(in srgb, var(--surface-strong) 92%, white 8%);
+  box-shadow: 0 20px 50px color-mix(in srgb, var(--text) 10%, transparent 90%);
 }
 
 .login-brand {
@@ -102,7 +102,7 @@ function handleLogin() {
 
 .login-copy span,
 .login-tip {
-  color: #71675e;
+  color: var(--muted);
   font-size: 0.86rem;
 }
 
@@ -118,22 +118,22 @@ function handleLogin() {
 
 .login-field span {
   font-size: 0.82rem;
-  color: #71675e;
+  color: var(--muted);
 }
 
 .login-input {
   min-height: 42px;
   padding: 0 14px;
-  border: 1px solid rgba(61, 49, 40, 0.14);
+  border: 1px solid var(--line);
   border-radius: 4px;
-  color: #241d18;
-  background: rgba(255, 255, 255, 0.72);
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface) 72%, white 28%);
 }
 
 .login-input:focus {
   outline: none;
-  border-color: rgba(196, 109, 76, 0.36);
-  box-shadow: 0 0 0 3px rgba(196, 109, 76, 0.08);
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent 62%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent 90%);
 }
 
 .login-meta {
@@ -146,15 +146,13 @@ function handleLogin() {
 .login-check {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: #71675e;
-  font-size: 0.8rem;
+  min-width: 0;
 }
 
 .login-link {
   padding: 0;
   border: 0;
-  color: #9c5538;
+  color: var(--accent-deep);
   font-size: 0.8rem;
   background: transparent;
   cursor: pointer;
