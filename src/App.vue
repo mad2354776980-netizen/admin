@@ -194,6 +194,7 @@ const isProfileMenuOpen = ref(false)
 const route = useRoute()
 const router = useRouter()
 const activePath = ref(route.path)
+// noinspection JSUnresolvedReference
 const isAuthRoute = computed(() => route.meta.layout === 'auth')
 /** @type {import('vue').Ref<string>} */
 const activeLogo = ref(getInitialLogo())
