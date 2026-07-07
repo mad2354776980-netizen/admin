@@ -28,7 +28,7 @@
             label="状态筛选"
             placeholder="请选择状态"
             :loading="isStatusLoading"
-            loading-text="正在加载状态选项..."
+            :loading-text="statusLoadingText"
           />
         </label>
         <label class="table-select-field">
@@ -66,6 +66,8 @@
             :options="segments"
             label="客户分层"
             placeholder="请选择分层"
+            :loading="isSegmentLoading"
+            :loading-text="segmentLoadingText"
           />
         </label>
         <div class="table-filter-actions">
@@ -325,9 +327,12 @@ import { showErrorMessage, showSuccessMessage } from '../components/uiMessage'
 const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
 const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
 const segments = ['高价值客户', '重点培育', '成熟客户', '续费客户', '风险观察']
+const statusLoadingText = '正在加载状态选项...'
+const segmentLoadingText = '正在加载分层选项...'
 const editableStatuses = statuses.filter((status) => status !== '全部')
 const editableChannels = channels.filter((channel) => channel !== '全部')
 const isStatusLoading = ref(true)
+const isSegmentLoading = ref(true)
 const activeStatus = ref('全部')
 const activeChannel = ref('全部')
 const activeSegments = ref([])
@@ -345,6 +350,7 @@ const editForm = ref(createEmptyEditor())
 const blockedScrollKeys = [' ', 'PageUp', 'PageDown', 'Home', 'End']
 let touchStartY = 0
 let statusLoadingTimer = 0
+let segmentLoadingTimer = 0
 
 const rows = ref([
   {
@@ -1033,11 +1039,19 @@ onMounted(() => {
   statusLoadingTimer = window.setTimeout(() => {
     isStatusLoading.value = false
   }, 5000)
+
+  segmentLoadingTimer = window.setTimeout(() => {
+    isSegmentLoading.value = false
+  }, 5000)
 })
 
 onBeforeUnmount(() => {
   if (statusLoadingTimer) {
     window.clearTimeout(statusLoadingTimer)
+  }
+
+  if (segmentLoadingTimer) {
+    window.clearTimeout(segmentLoadingTimer)
   }
 
   setPageScrollLocked(false)
