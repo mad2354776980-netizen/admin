@@ -255,6 +255,11 @@
                 >
               </span>
             </label>
+
+            <label class="table-select-field table-time-field">
+              <span class="table-select-label">跟进时间</span>
+              <UiDateTimePicker v-model="editForm.scheduledAt" placeholder="选择跟进时间" />
+            </label>
           </div>
 
           <div class="table-editor-actions">
@@ -733,6 +738,10 @@ function getRowDateValue(orderId) {
   return baseDate.getTime()
 }
 
+function getRowDateObject(orderId) {
+  return new Date(getRowDateValue(orderId))
+}
+
 function createEmptyEditor() {
   return {
     id: '',
@@ -742,7 +751,8 @@ function createEmptyEditor() {
     status: '',
     amount: '',
     owner: '',
-    updatedAt: ''
+    updatedAt: '',
+    scheduledAt: null
   }
 }
 
@@ -754,7 +764,10 @@ function openEditor(row) {
   }
 
   editingRowId.value = row.id
-  editForm.value = { ...row }
+  editForm.value = {
+    ...row,
+    scheduledAt: row.scheduledAt instanceof Date ? row.scheduledAt : getRowDateObject(row.id)
+  }
   isEditorOpen.value = true
 
   if (typeof window !== 'undefined') {
@@ -783,7 +796,8 @@ function createOrder() {
     status: editableStatuses[0] || '',
     amount: '',
     owner: '',
-    updatedAt: '刚刚'
+    updatedAt: '刚刚',
+    scheduledAt: new Date()
   }
   isEditorOpen.value = true
 
@@ -913,7 +927,9 @@ function getScrollableEditorContainer(target) {
     return null
   }
 
-  return target.closest('.table-editor-form')
+  return target.closest(
+    '.table-editor-form, .ui-select-menu, .dp--menu-wrapper, .dp--menu, .dp__menu, .dp__instance_calendar'
+  )
 }
 
 function canScrollEditor(container, deltaY) {
