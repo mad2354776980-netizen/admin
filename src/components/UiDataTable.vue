@@ -12,17 +12,25 @@
       </div>
     </div>
 
-    <div class="table-demo-scroll">
+    <div v-if="isEmpty" class="empty-state empty-state-page">
+      <div class="empty-state-figure" aria-hidden="true">
+        <span class="empty-state-ring"></span>
+        <span class="empty-state-dot"></span>
+      </div>
+      <div class="empty-state-copy">
+        <strong>{{ emptyTitle }}</strong>
+        <span>{{ emptyText }}</span>
+        <slot name="empty-action"></slot>
+      </div>
+    </div>
+
+    <div v-else class="table-demo-scroll">
       <div class="table-demo-shell">
         <slot v-if="hasGrid" name="grid"></slot>
         <template v-else>
           <slot name="header"></slot>
           <slot name="rows"></slot>
         </template>
-
-        <div v-if="isEmpty" class="empty-state">
-          {{ emptyText }}
-        </div>
       </div>
     </div>
 
@@ -51,6 +59,10 @@ const props = defineProps({
   emptyText: {
     type: String,
     default: '暂无数据'
+  },
+  emptyTitle: {
+    type: String,
+    default: '当前页暂无数据'
   }
 })
 

@@ -945,6 +945,72 @@ button {
   line-height: 1.8;
 }
 
+.empty-state-page {
+  min-height: 320px;
+  padding: 40px 24px;
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.empty-state-figure {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+}
+
+.empty-state-ring,
+.empty-state-dot {
+  display: block;
+  border-radius: 999px;
+}
+
+.empty-state-ring {
+  width: 86px;
+  height: 86px;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, var(--accent-soft) 18%);
+  background:
+    radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--surface-strong) 80%, white 20%), transparent 46%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, white 12%), color-mix(in srgb, var(--surface) 96%, var(--accent-soft) 4%));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 10px 24px rgba(61, 49, 40, 0.06);
+}
+
+.empty-state-dot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: color-mix(in srgb, var(--accent) 82%, white 18%);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-soft) 55%, transparent 45%);
+}
+
+.empty-state-copy {
+  display: grid;
+  gap: 8px;
+  max-width: 320px;
+}
+
+.empty-state-copy strong {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.empty-state-copy span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+.empty-state-copy .ui-button {
+  justify-self: center;
+  margin-top: 4px;
+}
+
 .component-showcase {
   display: grid;
   gap: 24px;

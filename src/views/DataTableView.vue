@@ -19,7 +19,8 @@
     <UiDataTable
       aria-label="数据表格内容区域"
       :summary-text="`共 ${filteredRows.length} 条记录，已选 ${selectedVisibleCount} 条`"
-      :is-empty="filteredRows.length === 0"
+      :is-empty="paginatedRows.length === 0"
+      empty-title="当前页暂无订单"
       empty-text="没有匹配的数据，调整搜索词或状态筛选后重试。"
     >
       <template #actions>
@@ -29,7 +30,7 @@
       <template #grid>
         <UiDataTableGrid
           :columns="orderTableColumns"
-          :rows="filteredRows"
+          :rows="paginatedRows"
           :selected-row-ids="selectedRowIds"
         >
           <template #header-select>
@@ -97,7 +98,11 @@
       </template>
 
       <template #pagination>
-        <UiPagination v-model="currentPage" :pages="[1, 2, 3]" />
+        <UiPagination v-model="currentPage" :pages="paginationPages" />
+      </template>
+
+      <template #empty-action>
+        <UiButton @click="currentPage = 1">返回第一页</UiButton>
       </template>
     </UiDataTable>
 
@@ -214,6 +219,8 @@ const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
 let statusLoadingTimer = 0
 let segmentLoadingTimer = 0
+const pageSize = 20
+const paginationPages = [1, 2, 3]
 
 const rows = ref([
   {
@@ -546,8 +553,13 @@ const filteredRows = computed(() => {
   })
 })
 
+const paginatedRows = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize
+  return filteredRows.value.slice(startIndex, startIndex + pageSize)
+})
+
 // noinspection JSUnresolvedReference
-const visibleRowIds = computed(() => filteredRows.value.map((row) => row.id))
+const visibleRowIds = computed(() => paginatedRows.value.map((row) => row.id))
 // noinspection JSUnresolvedReference
 const selectedVisibleCount = computed(() => visibleRowIds.value.filter((id) => selectedRowIds.value.includes(id)).length)
 const allVisibleRowsSelected = computed(() => visibleRowIds.value.length > 0 && selectedVisibleCount.value === visibleRowIds.value.length)
@@ -575,11 +587,13 @@ const filterFields = computed(() => orderFilterFields.map((field) => {
 useDialogScrollLock(isDialogOpen, closeActiveDialog)
 
 function applyFilters() {
+  currentPage.value = 1
   return filteredRows.value
 }
 
 function resetFilters() {
   filterValues.value = createDefaultOrderFilters()
+  currentPage.value = 1
   selectedRowIds.value = []
 }
 

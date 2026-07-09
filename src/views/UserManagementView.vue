@@ -19,7 +19,8 @@
     <UiDataTable
       aria-label="用户管理列表区域"
       :summary-text="`共 ${filteredUsers.length} 条记录，已选 ${selectedVisibleCount} 条`"
-      :is-empty="filteredUsers.length === 0"
+      :is-empty="paginatedUsers.length === 0"
+      empty-title="当前页暂无用户"
       empty-text="没有匹配的用户，调整筛选条件后重试。"
     >
       <template #actions>
@@ -29,7 +30,7 @@
       <template #grid>
         <UiDataTableGrid
           :columns="userTableColumns"
-          :rows="filteredUsers"
+          :rows="paginatedUsers"
           :selected-row-ids="selectedRowIds"
         >
           <template #header-select>
@@ -85,7 +86,11 @@
       </template>
 
       <template #pagination>
-        <UiPagination v-model="currentPage" :pages="[1, 2, 3]" />
+        <UiPagination v-model="currentPage" :pages="paginationPages" />
+      </template>
+
+      <template #empty-action>
+        <UiButton @click="currentPage = 1">返回第一页</UiButton>
       </template>
     </UiDataTable>
 
@@ -200,6 +205,8 @@ const isSavingUser = ref(false)
 const isDeletingUser = ref(false)
 const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
+const pageSize = 8
+const paginationPages = [1, 2, 3]
 
 const users = ref([
   createUserRecord('USR-24061', '林予', '运营管理员', '运营中心', '正常', '138 2011 0482', 'linyu@admin.demo', createDate(0, 10, 42)),
@@ -241,7 +248,12 @@ const filteredUsers = computed(() => {
   })
 })
 
-const visibleRowIds = computed(() => filteredUsers.value.map((item) => item.id))
+const paginatedUsers = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize
+  return filteredUsers.value.slice(startIndex, startIndex + pageSize)
+})
+
+const visibleRowIds = computed(() => paginatedUsers.value.map((item) => item.id))
 const selectedVisibleCount = computed(() => visibleRowIds.value.filter((id) => selectedRowIds.value.includes(id)).length)
 const allVisibleRowsSelected = computed(() => visibleRowIds.value.length > 0 && selectedVisibleCount.value === visibleRowIds.value.length)
 const hasPartialVisibleSelection = computed(() => selectedVisibleCount.value > 0 && !allVisibleRowsSelected.value)
@@ -251,11 +263,13 @@ const isDialogOpen = computed(() => isEditorOpen.value || isDeleteConfirmOpen.va
 useDialogScrollLock(isDialogOpen, closeActiveDialog)
 
 function applyFilters() {
+  currentPage.value = 1
   return filteredUsers.value
 }
 
 function resetFilters() {
   filterValues.value = createDefaultUserFilters()
+  currentPage.value = 1
   selectedRowIds.value = []
 }
 
