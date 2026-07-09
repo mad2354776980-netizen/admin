@@ -6,71 +6,11 @@
       title="数据表格"
       description="展示后台列表页中常用的搜索、筛选、状态列与分页结构。"
     >
-        <div class="table-search-field">
-          <span class="table-select-label">搜索订单或客户</span>
-          <div class="search-bar" role="search" aria-label="搜索订单或客户">
-            <input
-              v-model.trim="keyword"
-              class="search-input"
-              type="search"
-              placeholder="搜索订单号、客户、负责人"
-            >
-          </div>
-        </div>
-        <label class="table-select-field">
-          <span class="table-select-label">状态筛选</span>
-          <UiSelect
-            v-model="activeStatus"
-            :options="statuses"
-            label="状态筛选"
-            placeholder="请选择状态"
-            :loading="isStatusLoading"
-            :loading-text="statusLoadingText"
-          />
-        </label>
-        <label class="table-select-field">
-          <span class="table-select-label">渠道来源</span>
-          <UiSelect
-            v-model="activeChannel"
-            :options="channels"
-            label="渠道来源"
-            placeholder="请选择渠道"
-          />
-        </label>
-        <div class="table-search-field table-search-field-compact">
-          <span class="table-select-label">负责人</span>
-          <div class="search-bar" role="search" aria-label="负责人">
-            <input
-              v-model.trim="ownerKeyword"
-              class="search-input"
-              type="search"
-              placeholder="输入负责人"
-            >
-          </div>
-        </div>
-        <label class="table-select-field table-time-field">
-          <span class="table-select-label">开始时间</span>
-          <UiDateTimePicker v-model="startDate" placeholder="选择开始时间" />
-        </label>
-        <label class="table-select-field table-time-field">
-          <span class="table-select-label">结束时间</span>
-          <UiDateTimePicker v-model="endDate" placeholder="选择结束时间" />
-        </label>
-        <label class="table-select-field table-chip-field">
-          <span class="table-select-label">客户分层</span>
-          <UiMultiSelect
-            v-model="activeSegments"
-            :options="segments"
-            label="客户分层"
-            placeholder="请选择分层"
-            :loading="isSegmentLoading"
-            :loading-text="segmentLoadingText"
-          />
-        </label>
-        <div class="table-filter-actions">
+        <UiFilterFields v-model="filterValues" :fields="filterFields" />
+        <template #actions>
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
-        </div>
+        </template>
     </UiQueryPanel>
 
     <UiDataTable
@@ -79,13 +19,13 @@
       :is-empty="filteredRows.length === 0"
       empty-text="没有匹配的数据，调整搜索词或状态筛选后重试。"
     >
-      <template #head-action>
+      <template #actions>
         <UiButton class="table-create-button" variant="primary" @click="createOrder">新增订单</UiButton>
       </template>
 
       <template #grid>
         <UiDataTableGrid
-          :columns="tableColumns"
+          :columns="orderTableColumns"
           :rows="filteredRows"
           :selected-row-ids="selectedRowIds"
         >
@@ -154,13 +94,7 @@
       </template>
 
       <template #footer>
-        <div class="button-toolbar">
-          <UiButton disabled>上一页</UiButton>
-          <UiButton variant="primary">1</UiButton>
-          <UiButton>2</UiButton>
-          <UiButton>3</UiButton>
-          <UiButton>下一页</UiButton>
-        </div>
+        <UiPagination v-model="currentPage" :pages="[1, 2, 3]" />
       </template>
     </UiDataTable>
 
@@ -198,64 +132,7 @@
           </div>
         </template>
 
-        <label class="table-select-field">
-          <span class="table-select-label">客户名称</span>
-          <span class="search-bar" role="group" aria-label="客户名称">
-            <input
-              v-model.trim="editForm.customer"
-              class="search-input"
-              type="text"
-              placeholder="输入客户名称"
-            >
-          </span>
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">订单状态</span>
-          <UiSelect
-            v-model="editForm.status"
-            :options="editableStatuses"
-            label="订单状态"
-            placeholder="请选择状态"
-          />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">渠道来源</span>
-          <UiSelect
-            v-model="editForm.channel"
-            :options="editableChannels"
-            label="渠道来源"
-            placeholder="请选择渠道"
-          />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">客户分层</span>
-          <UiSelect
-            v-model="editForm.segment"
-            :options="segments"
-            label="客户分层"
-            placeholder="请选择分层"
-          />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">负责人</span>
-          <span class="search-bar" role="group" aria-label="负责人">
-            <input
-              v-model.trim="editForm.owner"
-              class="search-input"
-              type="text"
-              placeholder="输入负责人"
-            >
-          </span>
-        </label>
-
-        <label class="table-select-field table-time-field">
-          <span class="table-select-label">跟进时间</span>
-          <UiDateTimePicker v-model="editForm.scheduledAt" placeholder="选择跟进时间" />
-        </label>
+        <UiEditorFields v-model="editForm" :fields="editorFields" />
       </UiEditorDialog>
 
       <UiConfirmDialog
@@ -287,45 +164,44 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
 import UiConfirmDialog from '../components/UiConfirmDialog.vue'
 import UiDataTable from '../components/UiDataTable.vue'
 import UiDataTableGrid from '../components/UiDataTableGrid.vue'
-import UiDateTimePicker from '../components/UiDateTimePicker.vue'
 import UiEditorDialog from '../components/UiEditorDialog.vue'
-import UiMultiSelect from '../components/UiMultiSelect.vue'
+import UiEditorFields from '../components/UiEditorFields.vue'
+import UiFilterFields from '../components/UiFilterFields.vue'
+import UiPagination from '../components/UiPagination.vue'
 import UiQueryPanel from '../components/UiQueryPanel.vue'
-import UiSelect from '../components/UiSelect.vue'
 import { showErrorMessage, showSuccessMessage } from '../components/uiMessage'
+import { preservePageScroll } from '../composables/useDialogScrollPosition'
+import { useDialogScrollLock } from '../composables/useDialogScrollLock'
+import { orderEditorFieldConfig } from '../config/tableEditorFields'
+import { orderFilterFields } from '../config/tableFilters'
+import { orderTableColumns } from '../config/tableColumns'
 
-const statuses = ['全部', '待处理', '进行中', '已完成', '风险']
-const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', 'Web / 老客加购', 'API / 自动续费', 'API / 自动扣费']
-const segments = ['高价值客户', '重点培育', '成熟客户', '续费客户', '风险观察']
-const statusLoadingText = '正在加载状态选项...'
-const segmentLoadingText = '正在加载分层选项...'
-const tableColumns = [
-  { key: 'select', label: '', headerClass: 'table-checkbox-cell', cellClass: 'table-checkbox-cell table-cell table-cell-checkbox', dataLabel: '' },
-  { key: 'order', label: '订单', cellClass: 'table-cell table-cell-order' },
-  { key: 'customer', label: '客户', cellClass: 'table-cell table-cell-customer' },
-  { key: 'status', label: '状态', cellClass: 'table-cell table-cell-status' },
-  { key: 'amount', label: '金额', cellClass: 'table-cell table-cell-amount' },
-  { key: 'owner', label: '负责人', cellClass: 'table-cell table-cell-owner' },
-  { key: 'updatedAt', label: '更新时间', cellClass: 'table-cell table-cell-updated' },
-  { key: 'actions', label: '操作', headerClass: 'table-action-cell table-action-column', cellClass: 'table-action-cell table-action-column table-cell table-cell-action' }
-]
+const statuses = getFieldOptions(orderFilterFields, 'status')
+const channels = getFieldOptions(orderFilterFields, 'channel')
+const segments = getFieldOptions(orderFilterFields, 'segments')
 const editableStatuses = statuses.filter((status) => status !== '全部')
 const editableChannels = channels.filter((channel) => channel !== '全部')
+const editorFields = orderEditorFieldConfig.map((field) => {
+  const optionsMap = {
+    statusOptions: editableStatuses,
+    channelOptions: editableChannels,
+    segmentOptions: segments
+  }
+
+  return field.optionsKey
+    ? { ...field, options: optionsMap[field.optionsKey] || [] }
+    : field
+})
 const isStatusLoading = ref(true)
 const isSegmentLoading = ref(true)
-const activeStatus = ref('全部')
-const activeChannel = ref('全部')
-const activeSegments = ref([])
-const keyword = ref('')
-const ownerKeyword = ref('')
-const startDate = ref(null)
-const endDate = ref(null)
+const filterValues = ref(createDefaultOrderFilters())
+const currentPage = ref(1)
 const selectedRowIds = ref([])
 const isEditorOpen = ref(false)
 const pendingDeleteRow = ref(null)
@@ -333,8 +209,6 @@ const isSavingRow = ref(false)
 const isDeletingRow = ref(false)
 const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
-const blockedScrollKeys = [' ', 'PageUp', 'PageDown', 'Home', 'End']
-let touchStartY = 0
 let statusLoadingTimer = 0
 let segmentLoadingTimer = 0
 
@@ -632,21 +506,21 @@ const rows = ref([
 ])
 
 const filteredRows = computed(() => {
-  const normalizedKeyword = String(keyword.value).toLowerCase()
+  const normalizedKeyword = String(filterValues.value.keyword).toLowerCase()
 
   return rows.value.filter((row) => {
     // noinspection JSUnresolvedReference
-    const matchesStatus = activeStatus.value === '全部' || row.status === activeStatus.value
+    const matchesStatus = filterValues.value.status === '全部' || row.status === filterValues.value.status
     // noinspection JSUnresolvedReference
-    const matchesChannel = activeChannel.value === '全部' || row.channel === activeChannel.value
+    const matchesChannel = filterValues.value.channel === '全部' || row.channel === filterValues.value.channel
     // noinspection JSUnresolvedReference
-    const matchesSegment = activeSegments.value.length === 0 || activeSegments.value.indexOf(row.segment) !== -1
+    const matchesSegment = filterValues.value.segments.length === 0 || filterValues.value.segments.indexOf(row.segment) !== -1
     // noinspection JSUnresolvedReference
-    const matchesOwner = !ownerKeyword.value || row.owner.toLowerCase().includes(ownerKeyword.value.toLowerCase())
+    const matchesOwner = !filterValues.value.ownerKeyword || row.owner.toLowerCase().includes(filterValues.value.ownerKeyword.toLowerCase())
     // noinspection JSUnresolvedReference
     const rowDateValue = getRowDateValue(row.id)
-    const startDateValue = startDate.value ? startDate.value.getTime() : 0
-    const endDateValue = endDate.value ? endDate.value.getTime() : 0
+    const startDateValue = filterValues.value.startDate ? filterValues.value.startDate.getTime() : 0
+    const endDateValue = filterValues.value.endDate ? filterValues.value.endDate.getTime() : 0
     const matchesStartTime = !startDateValue || rowDateValue >= startDateValue
     const matchesEndTime = !endDateValue || rowDateValue <= endDateValue
     // noinspection JSUnresolvedReference
@@ -677,19 +551,32 @@ const allVisibleRowsSelected = computed(() => visibleRowIds.value.length > 0 && 
 const hasPartialVisibleSelection = computed(() => selectedVisibleCount.value > 0 && !allVisibleRowsSelected.value)
 const isDeleteConfirmOpen = computed(() => Boolean(pendingDeleteRow.value))
 const isDialogOpen = computed(() => isEditorOpen.value || isDeleteConfirmOpen.value)
+const filterFields = computed(() => orderFilterFields.map((field) => {
+  if (field.key === 'status') {
+    return {
+      ...field,
+      loading: isStatusLoading.value
+    }
+  }
+
+  if (field.key === 'segments') {
+    return {
+      ...field,
+      loading: isSegmentLoading.value
+    }
+  }
+
+  return field
+}))
+
+useDialogScrollLock(isDialogOpen, closeActiveDialog)
 
 function applyFilters() {
   return filteredRows.value
 }
 
 function resetFilters() {
-  keyword.value = ''
-  activeStatus.value = '全部'
-  activeChannel.value = '全部'
-  activeSegments.value = []
-  ownerKeyword.value = ''
-  startDate.value = null
-  endDate.value = null
+  filterValues.value = createDefaultOrderFilters()
   selectedRowIds.value = []
 }
 
@@ -738,6 +625,23 @@ function getRowDateObject(orderId) {
   return new Date(getRowDateValue(orderId))
 }
 
+function getFieldOptions(fields, key) {
+  const matchedField = fields.find((field) => field.key === key)
+  return matchedField && Array.isArray(matchedField.options) ? matchedField.options : []
+}
+
+function createDefaultOrderFilters() {
+  return {
+    keyword: '',
+    status: '全部',
+    channel: '全部',
+    ownerKeyword: '',
+    startDate: null,
+    endDate: null,
+    segments: []
+  }
+}
+
 function createEmptyEditor() {
   return {
     id: '',
@@ -753,58 +657,32 @@ function createEmptyEditor() {
 }
 
 function openEditor(row) {
-  const currentScrollY = typeof window === 'undefined' ? 0 : window.scrollY
-
-  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
-
-  editingRowId.value = row.id
-  editForm.value = {
-    ...row,
-    scheduledAt: row.scheduledAt instanceof Date ? row.scheduledAt : getRowDateObject(row.id)
-  }
-  isEditorOpen.value = true
-
-  if (typeof window !== 'undefined') {
-    nextTick(() => {
-      window.scrollTo(0, currentScrollY)
-      window.requestAnimationFrame(() => {
-        window.scrollTo(0, currentScrollY)
-      })
-    })
-  }
+  preservePageScroll(() => {
+    editingRowId.value = row.id
+    editForm.value = {
+      ...row,
+      scheduledAt: row.scheduledAt instanceof Date ? row.scheduledAt : getRowDateObject(row.id)
+    }
+    isEditorOpen.value = true
+  })
 }
 
 function createOrder() {
-  const currentScrollY = typeof window === 'undefined' ? 0 : window.scrollY
-
-  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
-
-  editingRowId.value = ''
-  editForm.value = {
-    id: `ORD-${Date.now()}`,
-    channel: editableChannels[0] || '',
-    customer: '',
-    segment: segments[0] || '',
-    status: editableStatuses[0] || '',
-    amount: '',
-    owner: '',
-    updatedAt: '刚刚',
-    scheduledAt: new Date()
-  }
-  isEditorOpen.value = true
-
-  if (typeof window !== 'undefined') {
-    nextTick(() => {
-      window.scrollTo(0, currentScrollY)
-      window.requestAnimationFrame(() => {
-        window.scrollTo(0, currentScrollY)
-      })
-    })
-  }
+  preservePageScroll(() => {
+    editingRowId.value = ''
+    editForm.value = {
+      id: `ORD-${Date.now()}`,
+      channel: editableChannels[0] || '',
+      customer: '',
+      segment: segments[0] || '',
+      status: editableStatuses[0] || '',
+      amount: '',
+      owner: '',
+      updatedAt: '刚刚',
+      scheduledAt: new Date()
+    }
+    isEditorOpen.value = true
+  })
 }
 
 function closeEditor(forceClose) {
@@ -918,109 +796,6 @@ async function confirmDelete() {
   }
 }
 
-function getScrollableEditorContainer(target) {
-  if (!(target instanceof Element)) {
-    return null
-  }
-
-  return target.closest(
-    '.table-editor-form, .ui-select-menu, .dp--menu-wrapper, .dp--menu, .dp__menu, .dp__instance_calendar'
-  )
-}
-
-function canScrollEditor(container, deltaY) {
-  if (!container || deltaY === 0) {
-    return false
-  }
-
-  const maxScrollTop = container.scrollHeight - container.clientHeight
-  if (maxScrollTop <= 0) {
-    return false
-  }
-
-  if (deltaY < 0) {
-    return container.scrollTop > 0
-  }
-
-  return container.scrollTop < maxScrollTop
-}
-
-function handleLockedWheel(event) {
-  if (!isDialogOpen.value) {
-    return
-  }
-
-  const container = getScrollableEditorContainer(event.target)
-  if (canScrollEditor(container, event.deltaY)) {
-    return
-  }
-
-  event.preventDefault()
-}
-
-function handleLockedKeydown(event) {
-  if (!isDialogOpen.value) {
-    return
-  }
-
-  const activeElement = document.activeElement
-  const isTypingTarget = activeElement instanceof HTMLInputElement
-    || activeElement instanceof HTMLTextAreaElement
-    || activeElement instanceof HTMLSelectElement
-    || (activeElement instanceof HTMLElement && activeElement.isContentEditable)
-
-  if (blockedScrollKeys.indexOf(event.key) !== -1) {
-    event.preventDefault()
-    return
-  }
-
-  if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !isTypingTarget) {
-    event.preventDefault()
-  }
-
-  if (event.key === 'Escape') {
-    closeActiveDialog()
-  }
-}
-
-function handleLockedTouchStart(event) {
-  const touch = event.touches && event.touches[0]
-  touchStartY = touch ? touch.clientY : 0
-}
-
-function handleLockedTouchMove(event) {
-  if (!isDialogOpen.value) {
-    return
-  }
-
-  const touch = event.touches && event.touches[0]
-  const currentY = touch ? touch.clientY : touchStartY
-  const deltaY = touchStartY - currentY
-  const container = getScrollableEditorContainer(event.target)
-
-  if (canScrollEditor(container, deltaY)) {
-    return
-  }
-
-  event.preventDefault()
-}
-
-function setPageScrollLocked(locked) {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  const method = locked ? 'addEventListener' : 'removeEventListener'
-  window[method]('wheel', handleLockedWheel, { passive: false })
-  window[method]('keydown', handleLockedKeydown, { passive: false })
-  window[method]('touchstart', handleLockedTouchStart, { passive: true })
-  window[method]('touchmove', handleLockedTouchMove, { passive: false })
-}
-
-watch(isDialogOpen, (nextValue) => {
-  setPageScrollLocked(nextValue)
-})
-
 onMounted(() => {
   statusLoadingTimer = window.setTimeout(() => {
     isStatusLoading.value = false
@@ -1039,7 +814,5 @@ onBeforeUnmount(() => {
   if (segmentLoadingTimer) {
     window.clearTimeout(segmentLoadingTimer)
   }
-
-  setPageScrollLocked(false)
 })
 </script>

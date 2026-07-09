@@ -1,8 +1,17 @@
 <template>
   <section class="panel content-panel" :aria-label="ariaLabel">
-    <div class="table-head">
-      <span class="table-summary-text">{{ summaryText }}</span>
-      <slot name="head-action"></slot>
+    <div v-if="hasHead" class="table-head">
+      <div v-if="hasSummary" class="table-head-summary">
+        <slot name="summary">
+          <span class="table-summary-text">{{ summaryText }}</span>
+        </slot>
+      </div>
+
+      <div v-if="hasActions" class="table-head-actions">
+        <slot name="actions">
+          <slot name="head-action"></slot>
+        </slot>
+      </div>
     </div>
 
     <div class="table-demo-scroll">
@@ -49,6 +58,9 @@ const props = defineProps({
 
 const slots = useSlots()
 
+const hasSummary = computed(() => Boolean(props.summaryText) || Boolean(slots.summary))
+const hasActions = computed(() => Boolean(slots.actions) || Boolean(slots['head-action']))
+const hasHead = computed(() => hasSummary.value || hasActions.value)
 const hasFooter = computed(() => Boolean(slots.footer))
 const hasGrid = computed(() => Boolean(slots.grid))
 </script>

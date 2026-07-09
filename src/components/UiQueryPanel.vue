@@ -9,11 +9,17 @@
 
     <div class="table-filter-bar" :aria-label="filterAriaLabel">
       <slot></slot>
+
+      <div v-if="hasActions" class="table-filter-actions">
+        <slot name="actions"></slot>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
+import { computed, useSlots } from 'vue'
+
 defineProps({
   ariaLabel: {
     type: String,
@@ -32,4 +38,7 @@ defineProps({
     default: ''
   }
 })
+
+const slots = useSlots()
+const hasActions = computed(() => Boolean(slots.actions))
 </script>

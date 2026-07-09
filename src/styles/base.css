@@ -990,6 +990,17 @@ button {
   flex-wrap: wrap;
 }
 
+.table-head-summary,
+.table-head-actions {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.table-head-actions {
+  margin-left: auto;
+}
+
 .table-summary-text {
   color: var(--muted);
   font-size: 0.88rem;

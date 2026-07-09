@@ -6,62 +6,11 @@
       title="用户管理"
       description="用于维护后台账号、角色权限、归属部门与登录状态。"
     >
-        <div class="table-search-field">
-          <span class="table-select-label">搜索用户</span>
-          <div class="search-bar" role="search" aria-label="搜索用户">
-            <input
-              v-model.trim="keyword"
-              class="search-input"
-              type="search"
-              placeholder="搜索姓名、工号、手机、邮箱"
-            >
-          </div>
-        </div>
-
-        <label class="table-select-field">
-          <span class="table-select-label">账号状态</span>
-          <UiSelect
-            v-model="activeStatus"
-            :options="statuses"
-            label="账号状态"
-            placeholder="请选择状态"
-          />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">角色类型</span>
-          <UiSelect
-            v-model="activeRole"
-            :options="roles"
-            label="角色类型"
-            placeholder="请选择角色"
-          />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">所属部门</span>
-          <UiSelect
-            v-model="activeDepartment"
-            :options="departments"
-            label="所属部门"
-            placeholder="请选择部门"
-          />
-        </label>
-
-        <label class="table-select-field table-time-field">
-          <span class="table-select-label">登录开始时间</span>
-          <UiDateTimePicker v-model="startDate" placeholder="选择开始时间" />
-        </label>
-
-        <label class="table-select-field table-time-field">
-          <span class="table-select-label">登录结束时间</span>
-          <UiDateTimePicker v-model="endDate" placeholder="选择结束时间" />
-        </label>
-
-        <div class="table-filter-actions">
+        <UiFilterFields v-model="filterValues" :fields="userFilterFields" />
+        <template #actions>
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
-        </div>
+        </template>
     </UiQueryPanel>
 
     <UiDataTable
@@ -70,13 +19,13 @@
       :is-empty="filteredUsers.length === 0"
       empty-text="没有匹配的用户，调整筛选条件后重试。"
     >
-      <template #head-action>
+      <template #actions>
         <UiButton class="table-create-button" variant="primary" @click="createUser">新增用户</UiButton>
       </template>
 
       <template #grid>
         <UiDataTableGrid
-          :columns="tableColumns"
+          :columns="userTableColumns"
           :rows="filteredUsers"
           :selected-row-ids="selectedRowIds"
         >
@@ -133,13 +82,7 @@
       </template>
 
       <template #footer>
-        <div class="button-toolbar">
-          <UiButton disabled>上一页</UiButton>
-          <UiButton variant="primary">1</UiButton>
-          <UiButton>2</UiButton>
-          <UiButton>3</UiButton>
-          <UiButton>下一页</UiButton>
-        </div>
+        <UiPagination v-model="currentPage" :pages="[1, 2, 3]" />
       </template>
     </UiDataTable>
 
@@ -177,46 +120,7 @@
           </div>
         </template>
 
-        <label class="table-select-field">
-          <span class="table-select-label">用户姓名</span>
-          <span class="search-bar" role="group" aria-label="用户姓名">
-            <input v-model.trim="editForm.name" class="search-input" type="text" placeholder="输入用户姓名">
-          </span>
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">手机号</span>
-          <span class="search-bar" role="group" aria-label="手机号">
-            <input v-model.trim="editForm.phone" class="search-input" type="text" placeholder="输入手机号">
-          </span>
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">邮箱</span>
-          <span class="search-bar" role="group" aria-label="邮箱">
-            <input v-model.trim="editForm.email" class="search-input" type="text" placeholder="输入邮箱">
-          </span>
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">角色类型</span>
-          <UiSelect v-model="editForm.role" :options="editableRoles" label="角色类型" placeholder="请选择角色" />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">所属部门</span>
-          <UiSelect v-model="editForm.department" :options="editableDepartments" label="所属部门" placeholder="请选择部门" />
-        </label>
-
-        <label class="table-select-field">
-          <span class="table-select-label">账号状态</span>
-          <UiSelect v-model="editForm.status" :options="editableStatuses" label="账号状态" placeholder="请选择状态" />
-        </label>
-
-        <label class="table-select-field table-time-field">
-          <span class="table-select-label">最近登录时间</span>
-          <UiDateTimePicker v-model="editForm.lastLoginAt" placeholder="选择最近登录时间" />
-        </label>
+        <UiEditorFields v-model="editForm" :fields="editorFields" />
       </UiEditorDialog>
 
       <UiConfirmDialog
@@ -248,41 +152,44 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
 import UiConfirmDialog from '../components/UiConfirmDialog.vue'
 import UiDataTable from '../components/UiDataTable.vue'
 import UiDataTableGrid from '../components/UiDataTableGrid.vue'
-import UiDateTimePicker from '../components/UiDateTimePicker.vue'
 import UiEditorDialog from '../components/UiEditorDialog.vue'
+import UiEditorFields from '../components/UiEditorFields.vue'
+import UiFilterFields from '../components/UiFilterFields.vue'
+import UiPagination from '../components/UiPagination.vue'
 import UiQueryPanel from '../components/UiQueryPanel.vue'
-import UiSelect from '../components/UiSelect.vue'
 import { showErrorMessage, showSuccessMessage } from '../components/uiMessage'
+import { preservePageScroll } from '../composables/useDialogScrollPosition'
+import { useDialogScrollLock } from '../composables/useDialogScrollLock'
+import { userEditorFieldConfig } from '../config/tableEditorFields'
+import { userFilterFields } from '../config/tableFilters'
+import { userTableColumns } from '../config/tableColumns'
 
-const statuses = ['全部', '正常', '待激活', '冻结']
-const roles = ['全部', '运营管理员', '客服主管', '财务专员', '内容审核员', '超级管理员']
-const departments = ['全部', '运营中心', '客户成功', '财务组', '内容中心', '技术支持']
+const statuses = getFieldOptions(userFilterFields, 'status')
+const roles = getFieldOptions(userFilterFields, 'role')
+const departments = getFieldOptions(userFilterFields, 'department')
 const editableStatuses = statuses.filter((item) => item !== '全部')
 const editableRoles = roles.filter((item) => item !== '全部')
 const editableDepartments = departments.filter((item) => item !== '全部')
-const tableColumns = [
-  { key: 'select', label: '', headerClass: 'table-checkbox-cell', cellClass: 'table-checkbox-cell table-cell table-cell-checkbox', dataLabel: '' },
-  { key: 'user', label: '用户', cellClass: 'table-cell table-cell-order' },
-  { key: 'role', label: '角色', cellClass: 'table-cell table-cell-owner' },
-  { key: 'department', label: '部门', cellClass: 'table-cell table-cell-customer' },
-  { key: 'status', label: '状态', cellClass: 'table-cell table-cell-status' },
-  { key: 'phone', label: '手机号', cellClass: 'table-cell table-cell-amount' },
-  { key: 'lastLoginAt', label: '最近登录', cellClass: 'table-cell table-cell-updated' },
-  { key: 'actions', label: '操作', headerClass: 'table-action-cell table-action-column', cellClass: 'table-action-cell table-action-column table-cell table-cell-action' }
-]
+const editorFields = userEditorFieldConfig.map((field) => {
+  const optionsMap = {
+    statusOptions: editableStatuses,
+    roleOptions: editableRoles,
+    departmentOptions: editableDepartments
+  }
 
-const keyword = ref('')
-const activeStatus = ref('全部')
-const activeRole = ref('全部')
-const activeDepartment = ref('全部')
-const startDate = ref(null)
-const endDate = ref(null)
+  return field.optionsKey
+    ? { ...field, options: optionsMap[field.optionsKey] || [] }
+    : field
+})
+
+const filterValues = ref(createDefaultUserFilters())
+const currentPage = ref(1)
 const selectedRowIds = ref([])
 const isEditorOpen = ref(false)
 const pendingDeleteRow = ref(null)
@@ -290,8 +197,6 @@ const isSavingUser = ref(false)
 const isDeletingUser = ref(false)
 const editingRowId = ref('')
 const editForm = ref(createEmptyEditor())
-const blockedScrollKeys = [' ', 'PageUp', 'PageDown', 'Home', 'End']
-let touchStartY = 0
 
 const users = ref([
   createUserRecord('USR-24061', '林予', '运营管理员', '运营中心', '正常', '138 2011 0482', 'linyu@admin.demo', createDate(0, 10, 42)),
@@ -309,7 +214,7 @@ const users = ref([
 ])
 
 const filteredUsers = computed(() => {
-  const normalizedKeyword = String(keyword.value).toLowerCase()
+  const normalizedKeyword = String(filterValues.value.keyword).toLowerCase()
 
   return users.value.filter((user) => {
     const matchesKeyword = [
@@ -320,11 +225,11 @@ const filteredUsers = computed(() => {
       user.role,
       user.department
     ].join(' ').toLowerCase().includes(normalizedKeyword)
-    const matchesStatus = activeStatus.value === '全部' || user.status === activeStatus.value
-    const matchesRole = activeRole.value === '全部' || user.role === activeRole.value
-    const matchesDepartment = activeDepartment.value === '全部' || user.department === activeDepartment.value
-    const startDateValue = startDate.value ? startDate.value.getTime() : 0
-    const endDateValue = endDate.value ? endDate.value.getTime() : 0
+    const matchesStatus = filterValues.value.status === '全部' || user.status === filterValues.value.status
+    const matchesRole = filterValues.value.role === '全部' || user.role === filterValues.value.role
+    const matchesDepartment = filterValues.value.department === '全部' || user.department === filterValues.value.department
+    const startDateValue = filterValues.value.startDate ? filterValues.value.startDate.getTime() : 0
+    const endDateValue = filterValues.value.endDate ? filterValues.value.endDate.getTime() : 0
     const loginTime = user.lastLoginAt.getTime()
     const matchesStartTime = !startDateValue || loginTime >= startDateValue
     const matchesEndTime = !endDateValue || loginTime <= endDateValue
@@ -340,17 +245,14 @@ const hasPartialVisibleSelection = computed(() => selectedVisibleCount.value > 0
 const isDeleteConfirmOpen = computed(() => Boolean(pendingDeleteRow.value))
 const isDialogOpen = computed(() => isEditorOpen.value || isDeleteConfirmOpen.value)
 
+useDialogScrollLock(isDialogOpen, closeActiveDialog)
+
 function applyFilters() {
   return filteredUsers.value
 }
 
 function resetFilters() {
-  keyword.value = ''
-  activeStatus.value = '全部'
-  activeRole.value = '全部'
-  activeDepartment.value = '全部'
-  startDate.value = null
-  endDate.value = null
+  filterValues.value = createDefaultUserFilters()
   selectedRowIds.value = []
 }
 
@@ -428,6 +330,22 @@ function formatTableDate(value) {
   return sameDay ? `${hour}:${minute}` : `${month}/${day} ${hour}:${minute}`
 }
 
+function getFieldOptions(fields, key) {
+  const matchedField = fields.find((field) => field.key === key)
+  return matchedField && Array.isArray(matchedField.options) ? matchedField.options : []
+}
+
+function createDefaultUserFilters() {
+  return {
+    keyword: '',
+    status: '全部',
+    role: '全部',
+    department: '全部',
+    startDate: null,
+    endDate: null
+  }
+}
+
 function formatFullDate(value) {
   const dateValue = value instanceof Date ? value : new Date(value)
   const year = dateValue.getFullYear()
@@ -440,57 +358,31 @@ function formatFullDate(value) {
 }
 
 function openEditor(user) {
-  const currentScrollY = typeof window === 'undefined' ? 0 : window.scrollY
-
-  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
-
-  editingRowId.value = user.id
-  editForm.value = {
-    ...user,
-    lastLoginAt: user.lastLoginAt instanceof Date ? new Date(user.lastLoginAt) : new Date(user.lastLoginAt)
-  }
-  isEditorOpen.value = true
-
-  if (typeof window !== 'undefined') {
-    nextTick(() => {
-      window.scrollTo(0, currentScrollY)
-      window.requestAnimationFrame(() => {
-        window.scrollTo(0, currentScrollY)
-      })
-    })
-  }
+  preservePageScroll(() => {
+    editingRowId.value = user.id
+    editForm.value = {
+      ...user,
+      lastLoginAt: user.lastLoginAt instanceof Date ? new Date(user.lastLoginAt) : new Date(user.lastLoginAt)
+    }
+    isEditorOpen.value = true
+  })
 }
 
 function createUser() {
-  const currentScrollY = typeof window === 'undefined' ? 0 : window.scrollY
-
-  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
-
-  editingRowId.value = ''
-  editForm.value = {
-    id: `USR-${Date.now()}`,
-    name: '',
-    role: editableRoles[0] || '',
-    department: editableDepartments[0] || '',
-    status: editableStatuses[0] || '',
-    phone: '',
-    email: '',
-    lastLoginAt: new Date()
-  }
-  isEditorOpen.value = true
-
-  if (typeof window !== 'undefined') {
-    nextTick(() => {
-      window.scrollTo(0, currentScrollY)
-      window.requestAnimationFrame(() => {
-        window.scrollTo(0, currentScrollY)
-      })
-    })
-  }
+  preservePageScroll(() => {
+    editingRowId.value = ''
+    editForm.value = {
+      id: `USR-${Date.now()}`,
+      name: '',
+      role: editableRoles[0] || '',
+      department: editableDepartments[0] || '',
+      status: editableStatuses[0] || '',
+      phone: '',
+      email: '',
+      lastLoginAt: new Date()
+    }
+    isEditorOpen.value = true
+  })
 }
 
 function closeEditor(forceClose) {
@@ -599,110 +491,4 @@ async function confirmDelete() {
   }
 }
 
-function getScrollableEditorContainer(target) {
-  if (!(target instanceof Element)) {
-    return null
-  }
-
-  return target.closest(
-    '.table-editor-form, .ui-select-menu, .dp--menu-wrapper, .dp--menu, .dp__menu, .dp__instance_calendar'
-  )
-}
-
-function canScrollEditor(container, deltaY) {
-  if (!container || deltaY === 0) {
-    return false
-  }
-
-  const maxScrollTop = container.scrollHeight - container.clientHeight
-  if (maxScrollTop <= 0) {
-    return false
-  }
-
-  if (deltaY < 0) {
-    return container.scrollTop > 0
-  }
-
-  return container.scrollTop < maxScrollTop
-}
-
-function handleLockedWheel(event) {
-  if (!isDialogOpen.value) {
-    return
-  }
-
-  const container = getScrollableEditorContainer(event.target)
-  if (canScrollEditor(container, event.deltaY)) {
-    return
-  }
-
-  event.preventDefault()
-}
-
-function handleLockedKeydown(event) {
-  if (!isDialogOpen.value) {
-    return
-  }
-
-  const activeElement = document.activeElement
-  const isTypingTarget = activeElement instanceof HTMLInputElement
-    || activeElement instanceof HTMLTextAreaElement
-    || activeElement instanceof HTMLSelectElement
-    || (activeElement instanceof HTMLElement && activeElement.isContentEditable)
-
-  if (blockedScrollKeys.indexOf(event.key) !== -1) {
-    event.preventDefault()
-    return
-  }
-
-  if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && !isTypingTarget) {
-    event.preventDefault()
-  }
-
-  if (event.key === 'Escape') {
-    closeActiveDialog()
-  }
-}
-
-function handleLockedTouchStart(event) {
-  const touch = event.touches && event.touches[0]
-  touchStartY = touch ? touch.clientY : 0
-}
-
-function handleLockedTouchMove(event) {
-  if (!isDialogOpen.value) {
-    return
-  }
-
-  const touch = event.touches && event.touches[0]
-  const currentY = touch ? touch.clientY : touchStartY
-  const deltaY = touchStartY - currentY
-  const container = getScrollableEditorContainer(event.target)
-
-  if (canScrollEditor(container, deltaY)) {
-    return
-  }
-
-  event.preventDefault()
-}
-
-function setPageScrollLocked(locked) {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  const method = locked ? 'addEventListener' : 'removeEventListener'
-  window[method]('wheel', handleLockedWheel, { passive: false })
-  window[method]('keydown', handleLockedKeydown, { passive: false })
-  window[method]('touchstart', handleLockedTouchStart, { passive: true })
-  window[method]('touchmove', handleLockedTouchMove, { passive: false })
-}
-
-watch(isDialogOpen, (nextValue) => {
-  setPageScrollLocked(nextValue)
-})
-
-onBeforeUnmount(() => {
-  setPageScrollLocked(false)
-})
 </script>
