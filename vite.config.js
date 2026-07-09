@@ -1,26 +1,24 @@
 // noinspection JSUnusedGlobalSymbols
 
-import { defineConfig } from 'vite'
+import { createLogger, defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+const logger = createLogger()
+const loggerWarn = logger.warn
+
+logger.warn = (msg, options) => {
+  const normalizedMessage = typeof msg === 'string' ? msg : ''
+  const isVueUseInvalidAnnotation = normalizedMessage.includes('INVALID_ANNOTATION')
+    && normalizedMessage.includes('/@vueuse/core/dist/index.js')
+
+  if (isVueUseInvalidAnnotation) {
+    return
+  }
+
+  loggerWarn(msg, options)
+}
 
 export default defineConfig({
   plugins: [vue()],
-  build: {
-    rolldownOptions: {
-      onLog(level, log, defaultHandler) {
-        const isVueUseInvalidAnnotation = level === 'warn'
-          && log
-          && log.code === 'INVALID_ANNOTATION'
-          && typeof log.id === 'string'
-          && log.id.includes('/@vueuse/core/dist/index.js')
-
-        if (isVueUseInvalidAnnotation) {
-          return
-        }
-
-        defaultHandler(level, log)
-      }
-    }
-  }
+  customLogger: logger
 })
