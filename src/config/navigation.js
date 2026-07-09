@@ -10,9 +10,7 @@ export const navGroups = [
   {
     label: '业务管理',
     children: [
-      { label: '订单管理', path: '/business/orders' },
-      { label: '客户分层', path: '/business/segments' },
-      { label: '支付记录', path: '/business/payments' }
+      { label: '用户管理', path: '/business/users' }
     ]
   },
   {

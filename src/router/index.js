@@ -4,6 +4,7 @@ import DataTableView from '../views/DataTableView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import PlaceholderView from '../views/PlaceholderView.vue'
+import UserManagementView from '../views/UserManagementView.vue'
 
 const routes = [
   {
@@ -20,6 +21,14 @@ const routes = [
     component: DashboardView,
     meta: {
       navLabel: '运营概览'
+    }
+  },
+  {
+    path: '/business/users',
+    name: 'user-management',
+    component: UserManagementView,
+    meta: {
+      navLabel: '用户管理'
     }
   },
   {
@@ -61,9 +70,7 @@ router.beforeEach((to) => {
   const routeLabelMap = {
     'workspace/live': '实时监控',
     'workspace/queue': '处理队列',
-    'business/orders': '订单管理',
-    'business/segments': '客户分层',
-    'business/payments': '支付记录',
+    'business/users': '用户管理',
     'content/review': '内容审核',
     'content/posts': '文章管理',
     'content/tags': '标签配置',

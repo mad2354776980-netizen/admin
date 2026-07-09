@@ -1,14 +1,11 @@
 <template>
   <div class="table-demo-page">
-    <section class="panel content-panel" aria-label="数据表格查询区域">
-      <div class="content-head">
-        <div class="content-copy">
-          <strong>数据表格</strong>
-          <span>展示后台列表页中常用的搜索、筛选、状态列与分页结构。</span>
-        </div>
-      </div>
-
-      <div class="table-filter-bar" aria-label="数据筛选">
+    <UiQueryPanel
+      aria-label="数据表格查询区域"
+      filter-aria-label="数据筛选"
+      title="数据表格"
+      description="展示后台列表页中常用的搜索、筛选、状态列与分页结构。"
+    >
         <div class="table-search-field">
           <span class="table-select-label">搜索订单或客户</span>
           <div class="search-bar" role="search" aria-label="搜索订单或客户">
@@ -74,87 +71,89 @@
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
         </div>
-      </div>
-    </section>
+    </UiQueryPanel>
 
-    <section class="panel content-panel" aria-label="数据表格内容区域">
-      <div class="table-head">
-        <span class="table-summary-text">共 {{ filteredRows.length }} 条记录，已选 {{ selectedVisibleCount }} 条</span>
+    <UiDataTable
+      aria-label="数据表格内容区域"
+      :summary-text="`共 ${filteredRows.length} 条记录，已选 ${selectedVisibleCount} 条`"
+      :is-empty="filteredRows.length === 0"
+      empty-text="没有匹配的数据，调整搜索词或状态筛选后重试。"
+    >
+      <template #head-action>
         <UiButton class="table-create-button" variant="primary" @click="createOrder">新增订单</UiButton>
-      </div>
+      </template>
 
-      <div class="table-demo-scroll">
-        <div class="table-demo-shell">
-          <div class="table-demo-grid table-header">
-            <span class="table-checkbox-cell">
-              <UiCheckbox
-                :model-value="allVisibleRowsSelected"
-                :indeterminate="hasPartialVisibleSelection"
-                @update:model-value="toggleAllVisibleRows"
-              />
-            </span>
-            <span>订单</span>
-            <span>客户</span>
-            <span>状态</span>
-            <span>金额</span>
-            <span>负责人</span>
-            <span>更新时间</span>
+      <template #grid>
+        <UiDataTableGrid
+          :columns="tableColumns"
+          :rows="filteredRows"
+          :selected-row-ids="selectedRowIds"
+        >
+          <template #header-select>
+            <UiCheckbox
+              :model-value="allVisibleRowsSelected"
+              :indeterminate="hasPartialVisibleSelection"
+              @update:model-value="toggleAllVisibleRows"
+            />
+          </template>
+
+          <template #header-actions>
             <span class="table-action-cell table-action-column">操作</span>
-          </div>
+          </template>
 
-          <div
-            v-for="row in filteredRows"
-            :key="row.id"
-            class="table-demo-grid"
-            :class="{ 'is-selected': isRowSelected(row.id) }"
-          >
-            <span class="table-checkbox-cell table-cell table-cell-checkbox">
-              <UiCheckbox
-                :model-value="isRowSelected(row.id)"
-                @update:model-value="toggleRowSelection(row.id)"
-              />
-            </span>
-            <span class="table-cell table-cell-order" data-label="订单">
-              <strong>{{ row.id }}</strong>
-              <small>{{ row.channel }}</small>
-            </span>
-            <span class="table-cell table-cell-status" data-label="状态">
-              <em class="status-pill" :class="statusClass(row.status)">{{ row.status }}</em>
-            </span>
-            <span class="table-cell table-cell-customer" data-label="客户">
-              <strong>{{ row.customer }}</strong>
-              <small>{{ row.segment }}</small>
-            </span>
-            <span class="table-cell table-cell-amount" data-label="金额">
-              <strong>{{ row.amount }}</strong>
-            </span>
-            <span class="table-cell table-cell-owner" data-label="负责人">{{ row.owner }}</span>
-            <span class="table-cell table-cell-updated" data-label="更新时间">{{ row.updatedAt }}</span>
-            <span class="table-action-cell table-action-column table-cell table-cell-action" data-label="操作">
-              <UiButton
-                class="table-action-button"
-                @mousedown.prevent
-                @click.stop="openEditor(row)"
-              >
-                编辑
-              </UiButton>
-              <UiButton
-                class="table-action-button table-action-button-danger"
-                @mousedown.prevent
-                @click.stop="openDeleteConfirm(row)"
-              >
-                删除
-              </UiButton>
-            </span>
-          </div>
+          <template #cell-select="{ row }">
+            <UiCheckbox
+              :model-value="isRowSelected(row.id)"
+              @update:model-value="toggleRowSelection(row.id)"
+            />
+          </template>
 
-          <div v-if="filteredRows.length === 0" class="empty-state">
-            没有匹配的数据，调整搜索词或状态筛选后重试。
-          </div>
-        </div>
-      </div>
+          <template #cell-order="{ row }">
+            <strong>{{ row.id }}</strong>
+            <small>{{ row.channel }}</small>
+          </template>
 
-      <div class="table-demo-footer">
+          <template #cell-status="{ row }">
+            <em class="status-pill" :class="statusClass(row.status)">{{ row.status }}</em>
+          </template>
+
+          <template #cell-customer="{ row }">
+            <strong>{{ row.customer }}</strong>
+            <small>{{ row.segment }}</small>
+          </template>
+
+          <template #cell-amount="{ row }">
+            <strong>{{ row.amount }}</strong>
+          </template>
+
+          <template #cell-owner="{ row }">
+            {{ row.owner }}
+          </template>
+
+          <template #cell-updatedAt="{ row }">
+            {{ row.updatedAt }}
+          </template>
+
+          <template #cell-actions="{ row }">
+            <UiButton
+              class="table-action-button"
+              @mousedown.prevent
+              @click.stop="openEditor(row)"
+            >
+              编辑
+            </UiButton>
+            <UiButton
+              class="table-action-button table-action-button-danger"
+              @mousedown.prevent
+              @click.stop="openDeleteConfirm(row)"
+            >
+              删除
+            </UiButton>
+          </template>
+        </UiDataTableGrid>
+      </template>
+
+      <template #footer>
         <div class="button-toolbar">
           <UiButton disabled>上一页</UiButton>
           <UiButton variant="primary">1</UiButton>
@@ -162,8 +161,8 @@
           <UiButton>3</UiButton>
           <UiButton>下一页</UiButton>
         </div>
-      </div>
-    </section>
+      </template>
+    </UiDataTable>
 
     <Teleport to="body">
       <Transition name="table-editor-scrim">
@@ -176,141 +175,113 @@
         ></button>
       </Transition>
 
-      <Transition name="table-editor-modal">
-        <div
-          v-if="isEditorOpen"
-          class="table-editor-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label="订单编辑弹窗"
-        >
-          <div class="table-editor-head">
-            <div class="table-editor-copy">
-              <strong>编辑订单</strong>
-              <span>{{ editForm.id || '未选择订单' }}</span>
-            </div>
-            <UiButton class="table-editor-close" icon :disabled="isSavingRow" aria-label="关闭编辑弹窗" @click="closeEditor">
-              ×
-            </UiButton>
+      <UiEditorDialog
+        :visible="isEditorOpen"
+        aria-label="订单编辑弹窗"
+        title="编辑订单"
+        :subtitle="editForm.id || '未选择订单'"
+        close-aria-label="关闭编辑弹窗"
+        :save-loading="isSavingRow"
+        :disable-close="isSavingRow"
+        @close="closeEditor"
+        @cancel="closeEditor"
+        @save="saveEditor"
+      >
+        <template #summary>
+          <div>
+            <span>金额</span>
+            <strong>{{ editForm.amount || '--' }}</strong>
           </div>
-
-          <div class="table-editor-summary">
-            <div>
-              <span>金额</span>
-              <strong>{{ editForm.amount || '--' }}</strong>
-            </div>
-            <div>
-              <span>更新时间</span>
-              <strong>{{ editForm.updatedAt || '--' }}</strong>
-            </div>
+          <div>
+            <span>更新时间</span>
+            <strong>{{ editForm.updatedAt || '--' }}</strong>
           </div>
+        </template>
 
-          <div class="table-editor-form">
-            <label class="table-select-field">
-              <span class="table-select-label">客户名称</span>
-              <span class="search-bar" role="group" aria-label="客户名称">
-                <input
-                  v-model.trim="editForm.customer"
-                  class="search-input"
-                  type="text"
-                  placeholder="输入客户名称"
-                >
-              </span>
-            </label>
+        <label class="table-select-field">
+          <span class="table-select-label">客户名称</span>
+          <span class="search-bar" role="group" aria-label="客户名称">
+            <input
+              v-model.trim="editForm.customer"
+              class="search-input"
+              type="text"
+              placeholder="输入客户名称"
+            >
+          </span>
+        </label>
 
-            <label class="table-select-field">
-              <span class="table-select-label">订单状态</span>
-              <UiSelect
-                v-model="editForm.status"
-                :options="editableStatuses"
-                label="订单状态"
-                placeholder="请选择状态"
-              />
-            </label>
+        <label class="table-select-field">
+          <span class="table-select-label">订单状态</span>
+          <UiSelect
+            v-model="editForm.status"
+            :options="editableStatuses"
+            label="订单状态"
+            placeholder="请选择状态"
+          />
+        </label>
 
-            <label class="table-select-field">
-              <span class="table-select-label">渠道来源</span>
-              <UiSelect
-                v-model="editForm.channel"
-                :options="editableChannels"
-                label="渠道来源"
-                placeholder="请选择渠道"
-              />
-            </label>
+        <label class="table-select-field">
+          <span class="table-select-label">渠道来源</span>
+          <UiSelect
+            v-model="editForm.channel"
+            :options="editableChannels"
+            label="渠道来源"
+            placeholder="请选择渠道"
+          />
+        </label>
 
-            <label class="table-select-field">
-              <span class="table-select-label">客户分层</span>
-              <UiSelect
-                v-model="editForm.segment"
-                :options="segments"
-                label="客户分层"
-                placeholder="请选择分层"
-              />
-            </label>
+        <label class="table-select-field">
+          <span class="table-select-label">客户分层</span>
+          <UiSelect
+            v-model="editForm.segment"
+            :options="segments"
+            label="客户分层"
+            placeholder="请选择分层"
+          />
+        </label>
 
-            <label class="table-select-field">
-              <span class="table-select-label">负责人</span>
-              <span class="search-bar" role="group" aria-label="负责人">
-                <input
-                  v-model.trim="editForm.owner"
-                  class="search-input"
-                  type="text"
-                  placeholder="输入负责人"
-                >
-              </span>
-            </label>
+        <label class="table-select-field">
+          <span class="table-select-label">负责人</span>
+          <span class="search-bar" role="group" aria-label="负责人">
+            <input
+              v-model.trim="editForm.owner"
+              class="search-input"
+              type="text"
+              placeholder="输入负责人"
+            >
+          </span>
+        </label>
 
-            <label class="table-select-field table-time-field">
-              <span class="table-select-label">跟进时间</span>
-              <UiDateTimePicker v-model="editForm.scheduledAt" placeholder="选择跟进时间" />
-            </label>
+        <label class="table-select-field table-time-field">
+          <span class="table-select-label">跟进时间</span>
+          <UiDateTimePicker v-model="editForm.scheduledAt" placeholder="选择跟进时间" />
+        </label>
+      </UiEditorDialog>
+
+      <UiConfirmDialog
+        :visible="isDeleteConfirmOpen"
+        aria-label="删除订单确认弹窗"
+        title="确认删除"
+        :subtitle="pendingDeleteRow ? pendingDeleteRow.id : '未选择订单'"
+        description="删除后该订单将从当前列表移除，且无法恢复。"
+        close-aria-label="关闭删除确认弹窗"
+        confirm-text="确认删除"
+        :confirm-loading="isDeletingRow"
+        @close="closeDeleteConfirm"
+        @cancel="closeDeleteConfirm"
+        @confirm="confirmDelete"
+      >
+        <template #meta>
+          <div v-if="pendingDeleteRow">
+            <dt>客户名称</dt>
+            <dd>{{ pendingDeleteRow.customer }}</dd>
           </div>
-
-          <div class="table-editor-actions">
-            <UiButton :disabled="isSavingRow" @click="closeEditor">取消</UiButton>
-            <UiButton variant="primary" :loading="isSavingRow" @click="saveEditor">保存</UiButton>
+          <div v-if="pendingDeleteRow">
+            <dt>订单状态</dt>
+            <dd>{{ pendingDeleteRow.status }}</dd>
           </div>
-        </div>
-      </Transition>
-
-      <Transition name="table-editor-modal">
-        <div
-          v-if="isDeleteConfirmOpen"
-          class="table-editor-modal table-confirm-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label="删除订单确认弹窗"
-        >
-          <div class="table-editor-head">
-            <div class="table-editor-copy">
-              <strong>确认删除</strong>
-              <span>{{ pendingDeleteRow ? pendingDeleteRow.id : '未选择订单' }}</span>
-            </div>
-            <UiButton class="table-editor-close" icon aria-label="关闭删除确认弹窗" @click="closeDeleteConfirm">
-              ×
-            </UiButton>
-          </div>
-
-          <div class="table-confirm-body">
-            <p>删除后该订单将从当前列表移除，且无法恢复。</p>
-            <dl v-if="pendingDeleteRow" class="table-confirm-meta">
-              <div>
-                <dt>客户名称</dt>
-                <dd>{{ pendingDeleteRow.customer }}</dd>
-              </div>
-              <div>
-                <dt>订单状态</dt>
-                <dd>{{ pendingDeleteRow.status }}</dd>
-              </div>
-            </dl>
-          </div>
-
-          <div class="table-editor-actions">
-            <UiButton :disabled="isDeletingRow" @click="closeDeleteConfirm">取消</UiButton>
-            <UiButton variant="primary" :loading="isDeletingRow" @click="confirmDelete">确认删除</UiButton>
-          </div>
-        </div>
-      </Transition>
+        </template>
+      </UiConfirmDialog>
     </Teleport>
   </div>
 </template>
@@ -319,8 +290,13 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import UiButton from '../components/UiButton.vue'
 import UiCheckbox from '../components/UiCheckbox.vue'
+import UiConfirmDialog from '../components/UiConfirmDialog.vue'
+import UiDataTable from '../components/UiDataTable.vue'
+import UiDataTableGrid from '../components/UiDataTableGrid.vue'
 import UiDateTimePicker from '../components/UiDateTimePicker.vue'
+import UiEditorDialog from '../components/UiEditorDialog.vue'
 import UiMultiSelect from '../components/UiMultiSelect.vue'
+import UiQueryPanel from '../components/UiQueryPanel.vue'
 import UiSelect from '../components/UiSelect.vue'
 import { showErrorMessage, showSuccessMessage } from '../components/uiMessage'
 
@@ -329,6 +305,16 @@ const channels = ['全部', 'App / 企业版', 'App / 新签', 'Web / 新客', '
 const segments = ['高价值客户', '重点培育', '成熟客户', '续费客户', '风险观察']
 const statusLoadingText = '正在加载状态选项...'
 const segmentLoadingText = '正在加载分层选项...'
+const tableColumns = [
+  { key: 'select', label: '', headerClass: 'table-checkbox-cell', cellClass: 'table-checkbox-cell table-cell table-cell-checkbox', dataLabel: '' },
+  { key: 'order', label: '订单', cellClass: 'table-cell table-cell-order' },
+  { key: 'customer', label: '客户', cellClass: 'table-cell table-cell-customer' },
+  { key: 'status', label: '状态', cellClass: 'table-cell table-cell-status' },
+  { key: 'amount', label: '金额', cellClass: 'table-cell table-cell-amount' },
+  { key: 'owner', label: '负责人', cellClass: 'table-cell table-cell-owner' },
+  { key: 'updatedAt', label: '更新时间', cellClass: 'table-cell table-cell-updated' },
+  { key: 'actions', label: '操作', headerClass: 'table-action-cell table-action-column', cellClass: 'table-action-cell table-action-column table-cell table-cell-action' }
+]
 const editableStatuses = statuses.filter((status) => status !== '全部')
 const editableChannels = channels.filter((channel) => channel !== '全部')
 const isStatusLoading = ref(true)
