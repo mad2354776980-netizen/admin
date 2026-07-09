@@ -8,9 +8,7 @@
       </div>
 
       <div v-if="hasActions" class="table-head-actions">
-        <slot name="actions">
-          <slot name="head-action"></slot>
-        </slot>
+        <slot name="actions"></slot>
       </div>
     </div>
 
@@ -28,8 +26,8 @@
       </div>
     </div>
 
-    <div v-if="hasFooter" class="table-demo-footer">
-      <slot name="footer"></slot>
+    <div v-if="hasPagination" class="table-demo-footer">
+      <slot name="pagination"></slot>
     </div>
   </section>
 </template>
@@ -59,8 +57,8 @@ const props = defineProps({
 const slots = useSlots()
 
 const hasSummary = computed(() => Boolean(props.summaryText) || Boolean(slots.summary))
-const hasActions = computed(() => Boolean(slots.actions) || Boolean(slots['head-action']))
+const hasActions = computed(() => Boolean(slots.actions))
 const hasHead = computed(() => hasSummary.value || hasActions.value)
-const hasFooter = computed(() => Boolean(slots.footer))
+const hasPagination = computed(() => Boolean(slots.pagination))
 const hasGrid = computed(() => Boolean(slots.grid))
 </script>

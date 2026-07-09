@@ -8,7 +8,7 @@
     </div>
 
     <div class="table-filter-bar" :aria-label="filterAriaLabel">
-      <slot></slot>
+      <slot name="fields"></slot>
 
       <div v-if="hasActions" class="table-filter-actions">
         <slot name="actions"></slot>

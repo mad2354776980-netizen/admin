@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="table-demo-page">
     <UiQueryPanel
@@ -6,7 +7,9 @@
       title="用户管理"
       description="用于维护后台账号、角色权限、归属部门与登录状态。"
     >
+        <template #fields>
         <UiFilterFields v-model="filterValues" :fields="userFilterFields" />
+        </template>
         <template #actions>
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
@@ -81,7 +84,7 @@
         </UiDataTableGrid>
       </template>
 
-      <template #footer>
+      <template #pagination>
         <UiPagination v-model="currentPage" :pages="[1, 2, 3]" />
       </template>
     </UiDataTable>

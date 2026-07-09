@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="table-demo-page">
     <UiQueryPanel
@@ -6,7 +7,9 @@
       title="数据表格"
       description="展示后台列表页中常用的搜索、筛选、状态列与分页结构。"
     >
+        <template #fields>
         <UiFilterFields v-model="filterValues" :fields="filterFields" />
+        </template>
         <template #actions>
           <UiButton @click="resetFilters">重置</UiButton>
           <UiButton variant="primary" @click="applyFilters">查询</UiButton>
@@ -93,7 +96,7 @@
         </UiDataTableGrid>
       </template>
 
-      <template #footer>
+      <template #pagination>
         <UiPagination v-model="currentPage" :pages="[1, 2, 3]" />
       </template>
     </UiDataTable>

@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div ref="rootRef" class="ui-select ui-multi-select">
     <button
